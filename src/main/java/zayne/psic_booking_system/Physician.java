@@ -21,6 +21,23 @@ public class Physician extends Person {
     public Treatment[] treatment = new Treatment[] {};
 
     /**
+     * Get all registered Physicians in PSIC.
+     *
+     * @return A list of all Physicians.
+     * @throws SecurityException
+     * @throws NoSuchFieldException
+     * @throws FileNotFoundException
+     * @throws JSONException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    public static ArrayList<Physician> GetPhysicians() throws IllegalArgumentException, IllegalAccessException,
+            JSONException, FileNotFoundException, NoSuchFieldException, SecurityException {
+        // DONE: Read data from JSON file
+        return JSONHelper.getPhysicians();
+    }
+
+    /**
      * Find Physicians by fullname.
      *
      * @param name - Name of the physician.
