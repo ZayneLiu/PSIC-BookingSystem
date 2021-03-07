@@ -55,8 +55,15 @@ public class Physician extends Person {
      * @return A list of physicians with the same name provided.
      */
     public static ArrayList<Physician> FindPhysiciansByName(String name) {
+        // DONE: Retrieve all phsicians with the provided name.
         var result = new ArrayList<Physician>();
-        // TODO: Retrieve all phsicians with the provided name.
+
+        for (Physician physician : physicians) {
+            if (physician.name.toLowerCase().contains(name.toLowerCase())) {
+                result.add(physician);
+            }
+        }
+
         return result;
     }
 
@@ -86,7 +93,8 @@ public class Physician extends Person {
         var result = "------------\n";
         for (var field : this.getClass().getFields()) {
             try {
-                result.concat("%s: %s\n".formatted(field.getName(), field.get(this).toString()));
+                // System.out.println("%s: %s\n".formatted(field.getName(), field.get(this)));
+                result += ("%s: %s\n".formatted(field.getName(), field.get(this)));
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
