@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import org.json.JSONException;
 
 public class Physician extends Person {
+
+    /**
+     * In-memory storage of physicians data.
+     */
+    private static ArrayList<Physician> physicians = GetPhysicians();
+
+    public Expertise[] expertise = new Expertise[] {};
+
+    public Treatment[] treatment = new Treatment[] {};
+
     public Physician() {
         super();
     }
@@ -13,12 +23,6 @@ public class Physician extends Person {
     public Physician(String name) {
         super(name);
     }
-
-    private static ArrayList<Physician> physicians = new ArrayList<>();
-
-    public Expertise[] expertise = new Expertise[] {};
-
-    public Treatment[] treatment = new Treatment[] {};
 
     /**
      * Get all registered Physicians in PSIC.
@@ -31,10 +35,17 @@ public class Physician extends Person {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    public static ArrayList<Physician> GetPhysicians() throws IllegalArgumentException, IllegalAccessException,
-            JSONException, FileNotFoundException, NoSuchFieldException, SecurityException {
+    public static ArrayList<Physician> GetPhysicians() {
         // DONE: Read data from JSON file
-        return JSONHelper.getPhysicians();
+        var result = new ArrayList<Physician>();
+        try {
+            result = JSONHelper.getPhysicians();
+        } catch (IllegalArgumentException | IllegalAccessException | JSONException | FileNotFoundException
+                | NoSuchFieldException | SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
