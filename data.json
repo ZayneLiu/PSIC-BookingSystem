@@ -54,7 +54,9 @@
       "name": "Ana Fowler",
       "tel": "+44 0797 044 4223",
       "address": "936 Remsen Street, Virgie, Marshall Islands, 7440",
-      "expertise": [],
+      "expertise": [
+        "Physiotherapy"
+      ],
       "treatment": []
     },
     {

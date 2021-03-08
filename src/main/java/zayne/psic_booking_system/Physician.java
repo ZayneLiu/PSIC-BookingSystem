@@ -12,9 +12,9 @@ public class Physician extends Person {
      */
     private static ArrayList<Physician> physicians = GetPhysicians();
 
-    public Expertise[] expertise = new Expertise[] {};
+    public ArrayList<Expertise> expertise = new ArrayList<Expertise>();
 
-    public Treatment[] treatment = new Treatment[] {};
+    public ArrayList<Treatment> treatment = new ArrayList<Treatment>();
 
     public Physician() {
         super();
@@ -55,9 +55,8 @@ public class Physician extends Person {
      * @return A list of physicians with the same name provided.
      */
     public static ArrayList<Physician> FindPhysiciansByName(String name) {
-        // DONE: Retrieve all phsicians with the provided name.
         var result = new ArrayList<Physician>();
-
+        // DONE: Retrieve all phsicians with the provided name.
         for (Physician physician : physicians) {
             if (physician.name.toLowerCase().contains(name.toLowerCase())) {
                 result.add(physician);
@@ -73,9 +72,15 @@ public class Physician extends Person {
      * @param expertise - Area of expertise
      * @return A list of physicians with matching area of expertise.
      */
-    public static ArrayList<Physician> FindPhysiciansByExpertise(Expertise expertise) {
+    public static ArrayList<Physician> FindPhysiciansByExpertise(String expertise) {
         var result = new ArrayList<Physician>();
+        var expertiseInNeed = Expertise.valueOf(expertise.toUpperCase());
         // TODO: Retrieve all phsicians with the provided expertise.
+        for (Physician physician : physicians) {
+            if (physician.expertise.contains(expertiseInNeed)) {
+                result.add(physician);
+            }
+        }
         return result;
     }
 
@@ -93,8 +98,18 @@ public class Physician extends Person {
         var result = "------------\n";
         for (var field : this.getClass().getFields()) {
             try {
+                if (field.getName() == "expertise" || field.getName() == "treatment") {
+                    var listDpkg = "[ ";
+                    for (var item : (ArrayList) field.get(this)) {
+                        listDpkg += "'%s', ".formatted(item);
+                    }
+                    listDpkg += " ]";
+                    result += ("%s: %s\n".formatted(field.getName(), listDpkg));
+                } else {
+
+                    result += ("%s: %s\n".formatted(field.getName(), field.get(this)));
+                }
                 // System.out.println("%s: %s\n".formatted(field.getName(), field.get(this)));
-                result += ("%s: %s\n".formatted(field.getName(), field.get(this)));
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

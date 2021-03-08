@@ -20,6 +20,17 @@ public class JSONHelper {
         return new JSONObject(new JSONTokener(new FileReader(JSON_URL)));
     }
 
+    /**
+     * Get all physicians from data storage.
+     *
+     * @return A list of all physicians retrieved and deserialized from `data.json`.
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws JSONException
+     * @throws FileNotFoundException
+     * @throws NoSuchFieldException
+     * @throws SecurityException
+     */
     public static ArrayList<Physician> getPhysicians() throws IllegalArgumentException, IllegalAccessException,
             JSONException, FileNotFoundException, NoSuchFieldException, SecurityException {
 
@@ -32,6 +43,7 @@ public class JSONHelper {
             var physician = new Physician();
             for (var item : Physician.class.getFields()) {
                 var fieldName = item.getName();
+                // Skip fields that don't exist in json file.
                 if (!obj.has(fieldName)) {
                     continue;
                 }
@@ -41,14 +53,28 @@ public class JSONHelper {
                 // Handle JSON arrays for expertise and treatments
                 if (JSONArray.class == obj.get(fieldName).getClass()) {
                     JSONArray jsonArray = (JSONArray) obj.get(fieldName);
-                    var arr = fieldName == "expertise" ? new Expertise[jsonArray.length()]
-                            : new Treatment[jsonArray.length()];
-                    for (var i = 0; i < arr.length; i++) {
-                        arr[i] = fieldName == "expertise" ? Expertise.valueOf(jsonArray.get(i).toString().toUpperCase())
-                                : Treatment.valueOf(jsonArray.get(i).toString().toUpperCase());
+
+                    switch (fieldName) {
+                        case "expertise":
+                            var expertiseList = new ArrayList<Expertise>();
+                            for (var i = 0; i < jsonArray.length(); i++) {
+                                var expertiseItem = Expertise.valueOf(jsonArray.get(i).toString().toUpperCase());
+                                expertiseList.add(expertiseItem);
+                            }
+                            field.set(physician, expertiseList);
+                            break;
+                        case "treatment":
+                            var treatmentList = new ArrayList<Treatment>();
+                            for (var i = 0; i < jsonArray.length(); i++) {
+                                var treatmentItem = Treatment.valueOf(jsonArray.get(i).toString().toUpperCase());
+                                treatmentList.add(treatmentItem);
+                            }
+                            field.set(physician, treatmentList);
+                            break;
+                        default:
+                            break;
                     }
 
-                    field.set(physician, arr);
                     continue;
                 }
 
