@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
+/**
+ * Working hours: 10:00 - 17:00
+ */
 public class Physician extends Person {
 
     /**
@@ -15,6 +18,11 @@ public class Physician extends Person {
     public ArrayList<Expertise> expertise = new ArrayList<Expertise>();
 
     public ArrayList<Treatment> treatment = new ArrayList<Treatment>();
+
+    /**
+     * Consultation hours is 2hrs each week. so only start time will be stored.
+     */
+    public String ConsultationHours = "Fri-2pm";
 
     public Physician() {
         super();
