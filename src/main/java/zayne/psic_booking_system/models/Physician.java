@@ -1,9 +1,11 @@
-package zayne.psic_booking_system;
+package zayne.psic_booking_system.models;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import org.json.JSONException;
+
+import zayne.psic_booking_system.JSONHelper;
 
 /**
  * Working hours: 10:00 - 17:00

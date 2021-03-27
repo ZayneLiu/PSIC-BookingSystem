@@ -1,4 +1,4 @@
-package zayne.psic_booking_system;
+package zayne.psic_booking_system.utils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -9,8 +9,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import zayne.psic_booking_system.Physician.Expertise;
-import zayne.psic_booking_system.Physician.Treatment;
+import zayne.psic_booking_system.models.Patient;
+import zayne.psic_booking_system.models.Physician;
+import zayne.psic_booking_system.models.Physician.Expertise;
+import zayne.psic_booking_system.models.Physician.Treatment;
 
 public class JSONHelper {
 
@@ -55,24 +57,24 @@ public class JSONHelper {
                     JSONArray jsonArray = (JSONArray) obj.get(fieldName);
 
                     switch (fieldName) {
-                        case "expertise":
-                            var expertiseList = new ArrayList<Expertise>();
-                            for (var i = 0; i < jsonArray.length(); i++) {
-                                var expertiseItem = Expertise.valueOf(jsonArray.get(i).toString().toUpperCase());
-                                expertiseList.add(expertiseItem);
-                            }
-                            field.set(physician, expertiseList);
-                            break;
-                        case "treatment":
-                            var treatmentList = new ArrayList<Treatment>();
-                            for (var i = 0; i < jsonArray.length(); i++) {
-                                var treatmentItem = Treatment.valueOf(jsonArray.get(i).toString().toUpperCase());
-                                treatmentList.add(treatmentItem);
-                            }
-                            field.set(physician, treatmentList);
-                            break;
-                        default:
-                            break;
+                    case "expertise":
+                        var expertiseList = new ArrayList<Expertise>();
+                        for (var i = 0; i < jsonArray.length(); i++) {
+                            var expertiseItem = Expertise.valueOf(jsonArray.get(i).toString().toUpperCase());
+                            expertiseList.add(expertiseItem);
+                        }
+                        field.set(physician, expertiseList);
+                        break;
+                    case "treatment":
+                        var treatmentList = new ArrayList<Treatment>();
+                        for (var i = 0; i < jsonArray.length(); i++) {
+                            var treatmentItem = Treatment.valueOf(jsonArray.get(i).toString().toUpperCase());
+                            treatmentList.add(treatmentItem);
+                        }
+                        field.set(physician, treatmentList);
+                        break;
+                    default:
+                        break;
                     }
 
                     continue;
@@ -86,5 +88,11 @@ public class JSONHelper {
         }
 
         return result;
+    }
+
+    public static ArrayList<Patient> getPatients() throws IllegalArgumentException, IllegalAccessException,
+            JSONException, FileNotFoundException, NoSuchFieldException, SecurityException {
+        // TODO: use reflection to impelement JSONHelper.getPatients();
+        return new ArrayList<>();
     }
 }

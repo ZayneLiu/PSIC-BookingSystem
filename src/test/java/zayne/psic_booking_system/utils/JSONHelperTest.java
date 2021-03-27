@@ -1,4 +1,4 @@
-package zayne.psic_booking_system;
+package zayne.psic_booking_system.utils;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package zayne.psic_booking_system;
+package zayne.psic_booking_system.models;
 
 import java.util.Date;
 

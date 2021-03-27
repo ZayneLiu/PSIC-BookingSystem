@@ -1,8 +1,8 @@
-package zayne.psic_booking_system;
+package zayne.psic_booking_system.models;
 
 import java.util.Date;
 
-import zayne.psic_booking_system.Physician.Treatment;
+import zayne.psic_booking_system.models.Physician.Treatment;
 
 public class Appointment {
 
@@ -39,7 +39,4 @@ public class Appointment {
         }
     }
 
-    public static void main(String[] args) {
-
-    }
 }
