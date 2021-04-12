@@ -5,25 +5,19 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
-import zayne.psic_booking_system.JSONHelper;
+import zayne.psic_booking_system.utils.JSONHelper;
 
-/**
- * Working hours: 10:00 - 17:00
- */
+/** Working hours: 10:00 - 17:00 */
 public class Physician extends Person {
 
-    /**
-     * In-memory storage of physicians data.
-     */
+    /** In-memory storage of physicians data. */
     private static ArrayList<Physician> physicians = GetPhysicians();
 
     public ArrayList<Expertise> expertise = new ArrayList<Expertise>();
 
     public ArrayList<Treatment> treatment = new ArrayList<Treatment>();
 
-    /**
-     * Consultation hours is 2hrs each week. so only start time will be stored.
-     */
+    /** Consultation hours is 2hrs each week. so only start time will be stored. */
     public String ConsultationHours = "Fri-2pm";
 
     public Physician() {
@@ -50,9 +44,12 @@ public class Physician extends Person {
         var result = new ArrayList<Physician>();
         try {
             result = JSONHelper.getPhysicians();
-        } catch (IllegalArgumentException | IllegalAccessException | JSONException | FileNotFoundException
-                | NoSuchFieldException | SecurityException e) {
-            // TODO Auto-generated catch block
+        } catch (IllegalArgumentException
+                | IllegalAccessException
+                | JSONException
+                | FileNotFoundException
+                | NoSuchFieldException
+                | SecurityException e) {
             e.printStackTrace();
         }
         return result;
@@ -66,7 +63,7 @@ public class Physician extends Person {
      */
     public static ArrayList<Physician> FindPhysiciansByName(String name) {
         var result = new ArrayList<Physician>();
-        // DONE: Retrieve all phsicians with the provided name.
+        // Retrieve all physicians with the provided name.
         for (Physician physician : physicians) {
             if (physician.name.toLowerCase().contains(name.toLowerCase())) {
                 result.add(physician);
@@ -85,7 +82,7 @@ public class Physician extends Person {
     public static ArrayList<Physician> FindPhysiciansByExpertise(String expertise) {
         var result = new ArrayList<Physician>();
         var expertiseInNeed = Expertise.valueOf(expertise.toUpperCase());
-        // TODO: Retrieve all phsicians with the provided expertise.
+        // Retrieve all physicians with the provided expertise.
         for (Physician physician : physicians) {
             if (physician.expertise.contains(expertiseInNeed)) {
                 result.add(physician);
@@ -101,7 +98,7 @@ public class Physician extends Person {
     // public static void
 
     public void CheckIn(Appointment appointment, Patient patient) {
-        // TODO:
+        // TODO: physician check-in implementation.
     }
 
     public String toString() {
@@ -121,7 +118,6 @@ public class Physician extends Person {
                 }
                 // System.out.println("%s: %s\n".formatted(field.getName(), field.get(this)));
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -130,8 +126,8 @@ public class Physician extends Person {
 
     // #region enum definitions.
     public enum Expertise {
-
-        PHYSIOTHERAPY("Physiotherapy"), REHABILITATION("Rehabilitation");
+        PHYSIOTHERAPY("Physiotherapy"),
+        REHABILITATION("Rehabilitation");
 
         private final String name;
 
@@ -145,7 +141,9 @@ public class Physician extends Person {
     }
 
     public enum Treatment {
-        MASSAGE("Massage"), ACUPUNCTURE("Acupuncture"), POOL_REHABILITATION("Pool_Rehabilitation");
+        MASSAGE("Massage"),
+        ACUPUNCTURE("Acupuncture"),
+        POOL_REHABILITATION("Pool_Rehabilitation");
 
         private final String name;
 

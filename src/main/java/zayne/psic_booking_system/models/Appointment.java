@@ -7,6 +7,7 @@ import zayne.psic_booking_system.models.Physician.Treatment;
 public class Appointment {
 
     public Appointment_Type type;
+    public int weekNumber;
     public Date startTime;
     public Date endTime;
     public Patient patient;
@@ -17,9 +18,10 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(Date startTime, Date endTime, Physician physician, Patient patient, Treatment treatment) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public Appointment(int week, Date start, Date end, Physician physician, Patient patient, Treatment treatment) {
+        this.weekNumber = week;
+        this.startTime = start;
+        this.endTime = end;
         this.physician = physician;
         this.patient = patient;
         this.treatment = treatment;

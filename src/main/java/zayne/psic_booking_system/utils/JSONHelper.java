@@ -1,7 +1,7 @@
 package zayne.psic_booking_system.utils;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -16,10 +16,10 @@ import zayne.psic_booking_system.models.Physician.Treatment;
 
 public class JSONHelper {
 
-    public static final String JSON_URL = "data.json";
+    public static InputStream JSON_STREAM = JSONHelper.class.getResourceAsStream("data.json");
 
     private static JSONObject getDataObject() throws JSONException, FileNotFoundException {
-        return new JSONObject(new JSONTokener(new FileReader(JSON_URL)));
+        return new JSONObject(new JSONTokener(JSON_STREAM));
     }
 
     /**
@@ -58,6 +58,7 @@ public class JSONHelper {
 
                     switch (fieldName) {
                     case "expertise":
+
                         var expertiseList = new ArrayList<Expertise>();
                         for (var i = 0; i < jsonArray.length(); i++) {
                             var expertiseItem = Expertise.valueOf(jsonArray.get(i).toString().toUpperCase());
@@ -65,7 +66,9 @@ public class JSONHelper {
                         }
                         field.set(physician, expertiseList);
                         break;
+
                     case "treatment":
+
                         var treatmentList = new ArrayList<Treatment>();
                         for (var i = 0; i < jsonArray.length(); i++) {
                             var treatmentItem = Treatment.valueOf(jsonArray.get(i).toString().toUpperCase());
@@ -73,20 +76,17 @@ public class JSONHelper {
                         }
                         field.set(physician, treatmentList);
                         break;
+
                     default:
                         break;
                     }
-
                     continue;
                 }
-
                 // Handle primitive types
                 field.set(physician, obj.get(fieldName));
             }
-
             result.add(physician);
         }
-
         return result;
     }
 

@@ -2,12 +2,15 @@ package zayne.psic_booking_system.models;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.json.JSONException;
 
+import zayne.psic_booking_system.models.Physician.Treatment;
 import zayne.psic_booking_system.utils.JSONHelper;
 
 public class Patient extends Person {
+
     private static ArrayList<Patient> patients;
 
     public static ArrayList<Patient> findPatient(String name) {
@@ -26,22 +29,29 @@ public class Patient extends Person {
         // TODO: Write to JSON file after addition;
     }
 
-    public static ArrayList<Patient> GetPhysicians() {
-        // DONE: Read data from JSON file
-        var result = new ArrayList<Patient>();
+    public static ArrayList<Patient> getPhysicians() {
+        // Read data from JSON file
         try {
-            result = JSONHelper.getPatients();
-        } catch (IllegalArgumentException | IllegalAccessException | JSONException | FileNotFoundException
-                | NoSuchFieldException | SecurityException e) {
-            // TODO Auto-generated catch block
+            patients = JSONHelper.getPatients();
+        } catch (IllegalArgumentException
+                | IllegalAccessException
+                | JSONException
+                | FileNotFoundException
+                | NoSuchFieldException
+                | SecurityException e) {
             e.printStackTrace();
         }
-        return result;
+        return patients;
+    }
+
+    public Appointment bookAppointment(
+            int weekNumber, Date start, Date end, Physician physician, Treatment treatment) {
+        var appointment = new Appointment(weekNumber, start, end, physician, this, treatment);
+        // TODO: Add to appointments
+        return appointment;
     }
 
     Patient(String name) {
         super(name);
-        // TODO Auto-generated constructor stub
     }
-
 }
