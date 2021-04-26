@@ -1,18 +1,15 @@
 package zayne.psic_booking_system.gui;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
+import zayne.psic_booking_system.models.Physician;
 
-import java.util.Properties;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 public class PatientController {
 
@@ -22,6 +19,10 @@ public class PatientController {
     public ChoiceBox<String> choiceBoxExpertise;
     public TextField textFieldKeyword;
     public Button btnSearch;
+    public DatePicker datePickerPatient;
+    public Button btnBookAppointment;
+    public Label labelErrMsg;
+    public ListView<String> listViewResult;
 
     /* method `initialize()` is called after the constructor. */
     @FXML
@@ -29,6 +30,24 @@ public class PatientController {
         choiceBoxSearchBy.getItems().add("Name");
         choiceBoxSearchBy.getItems().add("Expertise");
         choiceBoxSearchBy.setValue("Name");
+
+        choiceBoxExpertise.setDisable(true);
+
+        var minDate = LocalDate.of(2021, 5, 3);
+        var maxDate = LocalDate.of(2021, 5, 30);
+        datePickerPatient.setDayCellFactory(
+                d ->
+                        new DateCell() {
+                            @Override
+                            public void updateItem(LocalDate item, boolean empty) {
+                                super.updateItem(item, empty);
+                                setDisable(
+                                        item.isBefore(minDate)
+                                                || item.isAfter(maxDate)
+                                                || item.getDayOfWeek() == DayOfWeek.SATURDAY
+                                                || item.getDayOfWeek() == DayOfWeek.SUNDAY);
+                            }
+                        });
 
         choiceBoxSearchBy
                 .valueProperty()
@@ -46,15 +65,39 @@ public class PatientController {
                             }
                         });
 
+        for (var v : Physician.Expertise.values()) {
+
+            choiceBoxExpertise.getItems().add(v.name().toLowerCase());
+        }
+
         // .visibleProperty().bindBidirectional(choiceBoxSearchBy.valueProperty()equals());
         btnSearch.setOnMouseClicked(
                 new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
-                        // TODO: Search by name.
+                        labelErrMsg.setText("");
 
-                        // TODO: Search by expertise.
-                        System.out.println();
+                        // TODO: Search by name.
+                        var searchByName = choiceBoxSearchBy.getValue().equals("Name");
+                        if (searchByName) {
+                            Physician.FindPhysiciansByName(textFieldKeyword.getText().trim());
+                        }
+
+                        var keyword = textFieldKeyword.getText().trim();
+                        var expertise = choiceBoxExpertise.getValue();
+                        var date = datePickerPatient.getValue();
+
+                        if (searchByName && !keyword.equals("") && date != null) {
+                            System.out.printf("Search by name %s - %s%n", keyword, date);
+
+                        } else if (!searchByName && expertise != null && date != null) {
+                            System.out.printf("Search by expertise %s - %s%n", expertise, date);
+
+                        } else {
+                            labelErrMsg.setText("Fill in all fields!!");
+                        }
+                        // System.out.println(choiceBoxExpertise.getValue());
+                        // if (searchBy)
 
                         /* TODO: Display result.
                          *  Physician name
