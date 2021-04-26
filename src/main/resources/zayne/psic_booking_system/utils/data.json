@@ -1,0 +1,87 @@
+{
+  "physician": [
+    {
+      "_id": 1615503120508,
+      "name": "BetsyHopper",
+      "tel": "+4407866442335",
+      "address": "511HawthorneStreet,Duryea,NewHampshire,5065",
+      "expertise": [
+        "Physiotherapy"
+      ],
+      "treatment": [
+        "Massage",
+        "Acupuncture"
+      ]
+    },
+    {
+      "_id": 1614348032344,
+      "name": "SantiagoRomero",
+      "tel": "+4407845585328",
+      "address": "696ColemanStreet,Ahwahnee,Guam,1622",
+      "expertise": [],
+      "treatment": []
+    },
+    {
+      "_id": 1614448459669,
+      "name": "MirandaEspinoza",
+      "tel": "+4407882552388",
+      "address": "800BowneStreet,Haring,Hawaii,523",
+      "expertise": [
+        "Rehabilitation"
+      ],
+      "treatment": [
+        "Pool_Rehabilitation"
+      ]
+    },
+    {
+      "_id": 1614665107626,
+      "name": "KellerBurks",
+      "tel": "+4407952458363",
+      "address": "426JacksonCourt,Vandiver,Montana,2163",
+      "expertise": [],
+      "treatment": []
+    },
+    {
+      "_id": 1614559905127,
+      "name": "JewellBurgess",
+      "tel": "+4407928560227",
+      "address": "279EvergreenAvenue,Ventress,RhodeIsland,2918",
+      "expertise": [],
+      "treatment": []
+    },
+    {
+      "_id": 1615965893676,
+      "name": "AnaFowler",
+      "tel": "+4407970444223",
+      "address": "936RemsenStreet,Virgie,MarshallIslands,7440",
+      "expertise": [
+        "Physiotherapy"
+      ],
+      "treatment": []
+    },
+    {
+      "_id": 1614346086261,
+      "name": "JudyFowler",
+      "tel": "+4407951423296",
+      "address": "813SchenectadyAvenue,Jacksonburg,Washington,6811",
+      "expertise": [],
+      "treatment": []
+    },
+    {
+      "_id": 1614590986923,
+      "name": "AngelaPratt",
+      "tel": "+4407822415259",
+      "address": "869HamptonAvenue,Riceville,DistrictOfColumbia,2552",
+      "expertise": [],
+      "treatment": []
+    },
+    {
+      "_id": 1614538319951,
+      "name": "KristieLancaster",
+      "tel": "+4407874462288",
+      "address": "858HerkimerStreet,Gorst,FederatedStatesOfMicronesia,3014",
+      "expertise": [],
+      "treatment": []
+    }
+  ]
+}
