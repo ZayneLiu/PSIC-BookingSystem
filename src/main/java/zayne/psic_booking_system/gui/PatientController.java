@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
 
 import java.time.DayOfWeek;
@@ -23,6 +24,13 @@ public class PatientController {
     public Button btnBookAppointment;
     public Label labelErrMsg;
     public ListView<String> listViewResult;
+    public Label labelPatientID;
+    public TextField textFieldTelPatientRegistration;
+    public TextField textFieldPatientRegistration;
+    public ChoiceBox<String> choiceBoxPatient;
+    public RadioButton radioBtnIsVisitor;
+    public RadioButton radioBtnIsPatient;
+    public ToggleGroup userIdentity = new ToggleGroup();
 
     /* method `initialize()` is called after the constructor. */
     @FXML
@@ -69,6 +77,14 @@ public class PatientController {
 
             choiceBoxExpertise.getItems().add(v.name().toLowerCase());
         }
+
+        for (var patient : Patient.getPatients()) {
+
+            choiceBoxPatient.getItems().add("%s".formatted(patient.name));
+        }
+
+        choiceBoxPatient.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
+        labelPatientID.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
 
         // .visibleProperty().bindBidirectional(choiceBoxSearchBy.valueProperty()equals());
         btnSearch.setOnMouseClicked(

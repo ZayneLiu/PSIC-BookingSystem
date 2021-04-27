@@ -20,7 +20,7 @@ public class App extends Application {
 
         Parent fxml = FXMLLoader.load(getClass().getResource("homepage.fxml"));
 
-        scene = new Scene(fxml, 640, 480);
+        scene = new Scene(fxml, 640, 640);
         // Load `app.css` to the scene
         var css = getClass().getResource("app.css").toExternalForm();
         scene.getStylesheets().add(css);

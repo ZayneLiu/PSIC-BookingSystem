@@ -8,10 +8,9 @@ public class PatientTest {
     public static Patient patient = new Patient("Test", "123456789", "Somewhere");
 
     @Test
-    public void initTest() throws InterruptedException {
+    public void initTest() {
         var p1 = new Patient("Test", "123456789", "Somewhere");
         System.out.println(p1);
-        Thread.sleep(500);
         var p2 = new Patient("Test2", "123456789", "Somewhere else");
         System.out.println(p2);
     }

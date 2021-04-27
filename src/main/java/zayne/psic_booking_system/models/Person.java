@@ -1,19 +1,19 @@
 package zayne.psic_booking_system.models;
 
+import java.util.Calendar;
 import java.util.Date;
 
-public abstract class Person {
+public class Person {
 
-    public long _id = new Date().getTime();
+    public long _id;
     public String name = "";
     public String address = "";
     public String tel = "";
 
-    Person(String name) {
+    public Person(String name) {
         this.name = name;
+        _id = System.nanoTime();
     }
 
-    Person() {
-
-    }
+    public Person() {}
 }
