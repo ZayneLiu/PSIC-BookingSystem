@@ -7,7 +7,7 @@ import java.util.Calendar;
 
 public class Patient extends Person {
     // Visitor account
-    public static Patient visitorAccount = new Patient("Visitor");
+    // public static Patient visitorAccount = new Patient("Visitor");
     private static final ArrayList<Patient> patients = new ArrayList<>();
 
     static {
@@ -103,8 +103,6 @@ public class Patient extends Person {
         patients.add(patient15);
     }
 
-    public Patient() {}
-
     Patient(String name) {
         super(name);
     }
@@ -115,13 +113,11 @@ public class Patient extends Person {
         this.address = address;
     }
 
-    public static ArrayList<Patient> findPatient(String name) {
+    public static Patient findPatient(String name) {
         // DONE: find specific patient by name.
-        var result = new ArrayList<Patient>();
+        Patient result = null;
         for (Patient patient : patients) {
-            if (patient.name.toLowerCase().contains(name.toLowerCase())) {
-                result.add(patient);
-            }
+            if (patient.name.toLowerCase().contains(name.toLowerCase())) result = patient;
         }
         return result;
     }
@@ -132,53 +128,41 @@ public class Patient extends Person {
      * @param patient
      * @return whether it is successful.
      */
-    public static boolean addPatient(Patient patient) {
+    public static boolean registerPatient(Patient patient) {
         var ref =
                 new Object() {
                     boolean duplicated = false;
                 };
+
         patients.forEach(
                 p -> {
-                    if (p.name.equals(patient.name) || p._id == patient._id) {
-                        ref.duplicated = true;
-                    }
+                    if (p._id == patient._id) ref.duplicated = true;
                 });
+
         if (ref.duplicated) return false;
         patients.add(patient);
         return true;
     }
 
     public static ArrayList<Patient> getPatients() {
-        // Read data from JSON file
-        // try {
-        //     patients = JSONHelper.getPatients();
-        // } catch (IllegalArgumentException
-        //         | IllegalAccessException
-        //         | JSONException
-        //         | FileNotFoundException
-        //         | NoSuchFieldException
-        //         | SecurityException e) {
-        //     e.printStackTrace();
-        // }
         return patients;
     }
 
-    public void bookAppointment(Calendar start, Physician physician, Treatment treatment) {
+    public boolean bookAppointment(Calendar start, Physician physician, Treatment treatment) {
         var appointment = new Appointment(start, physician, this, treatment);
 
-        appointment.state = Appointment.Appointment_State.BOOKED;
-        Appointment.appointments.add(appointment);
+        return appointment.book();
     }
 
     public void attendAppointment(Appointment appointment) {
-        appointment.state = Appointment.Appointment_State.ATTENDED;
+        appointment.attend();
     }
 
     public void cancelAppointment(Appointment appointment) {
-        appointment.state = Appointment.Appointment_State.CANCELLED;
+        appointment.cancel();
     }
 
     public void missAppointment(Appointment appointment) {
-        appointment.state = Appointment.Appointment_State.MISSED;
+        appointment.miss();
     }
 }
