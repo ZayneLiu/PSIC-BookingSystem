@@ -1,14 +1,14 @@
 package zayne.psic_booking_system.models;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class PhysicianTest {
 
     @Test
     public void retrieveTest() {
-        var physicians = Physician.GetPhysicians();
+        var physicians = Physician.getPhysicians();
         // Test the number of physicians retrieved from JSON file.
         for (var item : physicians) {
             System.out.println(item);
@@ -18,7 +18,7 @@ public class PhysicianTest {
 
     @Test
     public void searchByNameTest() {
-        var searchResult = Physician.FindPhysiciansByName("Fowler");
+        var searchResult = Physician.findPhysiciansByName("Fowler");
         for (var item : searchResult) {
             System.out.println(item);
         }
@@ -27,7 +27,7 @@ public class PhysicianTest {
 
     @Test
     public void searchByExpertiseTest() {
-        var searchResult = Physician.FindPhysiciansByExpertise("Physiotherapy");
+        var searchResult = Physician.findPhysiciansByExpertise("Physiotherapy");
         for (var item : searchResult) {
             System.out.println(item);
         }
@@ -36,6 +36,6 @@ public class PhysicianTest {
 
     @Test
     public void getAppointmentTest() {
-        var searchResult = Physician.FindPhysiciansByName("Fowler");
+        var searchResult = Physician.findPhysiciansByName("Fowler");
     }
 }

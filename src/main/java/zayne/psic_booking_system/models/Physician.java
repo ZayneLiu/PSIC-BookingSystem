@@ -80,20 +80,17 @@ public class Physician extends Person {
      *
      * @return A list of all Physicians.
      */
-    public static ArrayList<Physician> GetPhysicians() {
-        // DONE: Read data from JSON file
-
-        // result.add()
+    public static ArrayList<Physician> getPhysicians() {
         return physicians;
     }
 
     /**
-     * Find Physicians by fullname.
+     * Find Physicians by name.
      *
      * @param name - Name of the physician.
      * @return A list of physicians with the same name provided.
      */
-    public static ArrayList<Physician> FindPhysiciansByName(String name) {
+    public static ArrayList<Physician> findPhysiciansByName(String name) {
         var result = new ArrayList<Physician>();
         // Retrieve all physicians with the provided name.
         for (Physician physician : physicians) {
@@ -111,7 +108,7 @@ public class Physician extends Person {
      * @param expertise - Area of expertise
      * @return A list of physicians with matching area of expertise.
      */
-    public static ArrayList<Physician> FindPhysiciansByExpertise(String expertise) {
+    public static ArrayList<Physician> findPhysiciansByExpertise(String expertise) {
         var result = new ArrayList<Physician>();
         var expertiseInNeed = Expertise.valueOf(expertise.toUpperCase());
         // Retrieve all physicians with the provided expertise.
