@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="zayne.psic_booking_system.gui.DataController"
+      prefHeight="Infinity" prefWidth="600.0">
+    <TitledPane prefHeight="-1" prefWidth="620.0" text="Physicians">
+        <ScrollPane>
+            <VBox fx:id="physicianList"  spacing="10.0"/>
+        </ScrollPane>
+    </TitledPane>
+    <TitledPane prefWidth="620.0" text="Patients">
+        <ScrollPane>
+            <VBox fx:id="patientList" alignment="CENTER" spacing="5.0"/>
+        </ScrollPane>
+    </TitledPane>
+    <TitledPane prefWidth="620.0" text="Appointments">
+        <ScrollPane>
+            <VBox fx:id="appointmentList" alignment="CENTER" spacing="5.0"/>
+        </ScrollPane>
+    </TitledPane>
+</HBox>

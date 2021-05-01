@@ -3,13 +3,10 @@ package zayne.psic_booking_system.gui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class HomePageController {
     public static HomePageController controller;
@@ -19,14 +16,24 @@ public class HomePageController {
     public VBox vBoxPatient;
     public VBox vBoxReport;
 
+    public HBox hBoxData;
+
     @FXML
     public void initialize() throws IOException {
-        var res =
-                Objects.requireNonNull(
-                        PatientController.class.getResource("patient-subsystem.fxml"));
-        VBox fxml = FXMLLoader.load(res);
+        // Retrieve and load fxml
+        var resPatient = PatientController.class.getResource("patient-subsystem.fxml");
+        assert resPatient != null;
 
-        vBoxPatient.getChildren().addAll(fxml.getChildren());
+        VBox fxmlPatient = FXMLLoader.load(resPatient);
+        vBoxPatient.getChildren().addAll(fxmlPatient.getChildren());
+
+        // Retrieve and load fxml
+        var resData = PatientController.class.getResource("data.fxml");
+        assert resData != null;
+
+        HBox fxmlData = FXMLLoader.load(resData);
+        hBoxData.getChildren().addAll(fxmlData.getChildren());
+
         controller = this;
     }
 

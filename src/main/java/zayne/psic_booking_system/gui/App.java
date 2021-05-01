@@ -2,14 +2,11 @@ package zayne.psic_booking_system.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 public class App extends Application {
 
@@ -17,12 +14,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        var res = getClass().getResource("homepage.fxml");
+        Parent fxml = FXMLLoader.load(Objects.requireNonNull(res));
 
-        Parent fxml = FXMLLoader.load(getClass().getResource("homepage.fxml"));
-
-        scene = new Scene(fxml, 640, 640);
+        scene = new Scene(fxml, 640, 700);
         // Load `app.css` to the scene
-        var css = getClass().getResource("app.css").toExternalForm();
+        var resCss = getClass().getResource("app.css");
+        var css = Objects.requireNonNull(resCss).toExternalForm();
         scene.getStylesheets().add(css);
 
         primaryStage.setScene(scene);

@@ -3,9 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox alignment="CENTER" prefHeight="640.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16"
+<VBox alignment="CENTER" prefWidth="640.0" xmlns="http://javafx.com/javafx/16"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="zayne.psic_booking_system.gui.PatientController">
-    <VBox alignment="CENTER" prefHeight="640.0" prefWidth="640.0" spacing="5.0" VBox.vgrow="ALWAYS">
+    <VBox alignment="CENTER" prefWidth="640.0" spacing="5.0" VBox.vgrow="ALWAYS">
         <VBox.margin>
             <Insets/>
         </VBox.margin>
@@ -18,6 +18,7 @@
             <Label text="Name:"/>
             <TextField fx:id="textFieldKeyword" prefHeight="25.0" prefWidth="140.0"/>
         </HBox>
+
         <HBox alignment="CENTER_LEFT" prefWidth="580.0" spacing="10.0">
             <Label text="Date:"/>
             <DatePicker fx:id="datePickerPatient"/>
@@ -28,33 +29,63 @@
                 </HBox.margin>
             </Button>
         </HBox>
+
         <Separator prefWidth="200.0"/>
         <ListView fx:id="listViewResult" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
-        <HBox alignment="CENTER" prefWidth="200.0" spacing="5.0">
-            <padding>
-                <Insets left="110.0"/>
-            </padding>
+        <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="5.0">
             <RadioButton fx:id="radioBtnIsVisitor" mnemonicParsing="false" text="Visitor">
                 <toggleGroup>
                     <ToggleGroup fx:id="userIdentity"/>
                 </toggleGroup>
             </RadioButton>
             <Separator orientation="VERTICAL"/>
-            <RadioButton fx:id="radioBtnIsPatient" toggleGroup="$userIdentity" mnemonicParsing="false" text="Patient"/>
+            <RadioButton fx:id="radioBtnIsPatient" mnemonicParsing="false" text="Patient" toggleGroup="$userIdentity"/>
             <ChoiceBox fx:id="choiceBoxPatient" prefHeight="25.0" prefWidth="100.0"/>
-            <Label fx:id="labelPatientID"/>
+            <Label fx:id="labelPatientID" alignment="CENTER_RIGHT" prefWidth="110.0"/>
+            <padding>
+                <Insets right="20.0"/>
+            </padding>
         </HBox>
+
         <Button fx:id="btnBookAppointment" alignment="CENTER" mnemonicParsing="false" text="Book"/>
         <TitledPane animated="false" prefWidth="620.0" text="Registration">
-            <VBox alignment="CENTER" prefWidth="100.0" spacing="10.0">
-                <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+            <VBox alignment="CENTER" prefWidth="100.0" spacing="5.0">
+                <HBox alignment="CENTER" prefWidth="200.0" spacing="5.0">
                     <Label alignment="CENTER" text="Name:"/>
-                    <TextField fx:id="textFieldPatientRegistration" prefHeight="25.0" prefWidth="140.0"/>
+                    <TextField fx:id="textPatientRegisterName" prefHeight="25.0" prefWidth="140.0"/>
                     <Separator orientation="VERTICAL"/>
                     <Label text="Tel:"/>
-                    <TextField fx:id="textFieldTelPatientRegistration" prefHeight="25.0" prefWidth="160.0"/>
+                    <TextField fx:id="textPatientRegisterTel" prefHeight="25.0" prefWidth="160.0"/>
+                    <Separator orientation="VERTICAL"/>
+                    <Label alignment="CENTER" text="Addr.:"/>
+                    <TextField fx:id="textPatientRegisterAddr" prefHeight="25.0" prefWidth="140.0"/>
                 </HBox>
-                <Button alignment="CENTER" mnemonicParsing="false" text="Button"/>
+                <Label alignment="CENTER" fx:id="labelPatientRegisterErrMsg"/>
+                <Button fx:id="btnPatientRegistration" alignment="CENTER" mnemonicParsing="false" text="Button"/>
+            </VBox>
+        </TitledPane>
+
+        <TitledPane animated="false" prefWidth="620.0" text="Appointment">
+            <VBox alignment="CENTER" prefWidth="100.0" spacing="5.0">
+                <HBox alignment="CENTER" prefWidth="200.0" spacing="5.0">
+                    <Label alignment="CENTER" text="Select patient:"/>
+                    <ChoiceBox fx:id="choiceBoxPatientAppointment" prefWidth="100"/>
+                    <Separator orientation="VERTICAL"/>
+                    <Label alignment="CENTER" text="Select appointment:"/>
+                    <ChoiceBox fx:id="choiceBoxAppointment" prefWidth="150"/>
+                </HBox>
+                <HBox alignment="CENTER" spacing="5">
+                    <Label alignment="CENTER" text="Patient ID:"/>
+                    <Label alignment="CENTER" fx:id="labelAppointmentPatientID"/>
+                    <Separator orientation="VERTICAL"/>
+                    <Label alignment="CENTER" text="Status:"/>
+                    <Label alignment="CENTER" fx:id="labelAppointment"/>
+                </HBox>
+                <HBox alignment="CENTER" spacing="20">
+                    <Button fx:id="btnAttendAppointment" alignment="CENTER" mnemonicParsing="false" text="Attend"/>
+                    <Button fx:id="btnMissAppointment" alignment="CENTER" mnemonicParsing="false" text="Cancel"/>
+                    <Button fx:id="btnCancelAppointment" alignment="CENTER" mnemonicParsing="false" text="Miss"/>
+                </HBox>
             </VBox>
         </TitledPane>
         <padding>

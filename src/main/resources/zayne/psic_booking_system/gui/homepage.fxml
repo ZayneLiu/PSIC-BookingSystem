@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.VBox?>
-
-<VBox fx:id="vBoxMain" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16"
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox fx:id="vBoxMain"  prefWidth="640.0" xmlns="http://javafx.com/javafx/16"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="zayne.psic_booking_system.gui.HomePageController">
-    <TabPane prefHeight="480" prefWidth="640.0" tabClosingPolicy="UNAVAILABLE">
+    <TabPane prefWidth="640.0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="Physician Subsystem">
-            <VBox fx:id="vBoxPhysician" prefHeight="200.0" prefWidth="100.0"/>
+            <VBox fx:id="vBoxPhysician"/>
         </Tab>
         <Tab text="Patient Subsystem">
-            <VBox fx:id="vBoxPatient" prefHeight="200.0" prefWidth="100.0"/>
+            <VBox fx:id="vBoxPatient"/>
         </Tab>
         <Tab text="Report">
-            <VBox fx:id="vBoxReport" prefHeight="200.0" prefWidth="100.0"/>
+            <VBox fx:id="vBoxReport"/>
+        </Tab>
+        <Tab text="Data">
+            <HBox fx:id="hBoxData"/>
         </Tab>
     </TabPane>
 </VBox>
