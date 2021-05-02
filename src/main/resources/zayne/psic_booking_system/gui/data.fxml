@@ -3,23 +3,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="zayne.psic_booking_system.gui.DataController"
       prefHeight="Infinity" prefWidth="600.0">
-    <TitledPane prefHeight="-1" prefWidth="620.0" text="Physicians">
+    <TitledPane fx:id="physicianPane" prefHeight="-1" prefWidth="620.0" text="Physicians">
         <ScrollPane>
-            <VBox fx:id="physicianList"  spacing="10.0"/>
+            <VBox fx:id="physicianList"  spacing="10.0">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
+            </VBox>
         </ScrollPane>
     </TitledPane>
-    <TitledPane prefWidth="620.0" text="Patients">
+    <TitledPane fx:id="patientPane" prefWidth="620.0" text="Patients">
         <ScrollPane>
-            <VBox fx:id="patientList" alignment="CENTER" spacing="5.0"/>
+            <VBox fx:id="patientList" spacing="10.0">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
+            </VBox>
         </ScrollPane>
     </TitledPane>
-    <TitledPane prefWidth="620.0" text="Appointments">
+    <TitledPane fx:id="appointmentPane" prefWidth="620.0" text="Appointments">
         <ScrollPane>
-            <VBox fx:id="appointmentList" alignment="CENTER" spacing="5.0"/>
+            <VBox fx:id="appointmentList" spacing="10.0">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
+            </VBox>
         </ScrollPane>
     </TitledPane>
 </HBox>

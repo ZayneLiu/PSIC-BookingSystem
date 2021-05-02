@@ -165,4 +165,10 @@ public class Patient extends Person {
     public void missAppointment(Appointment appointment) {
         appointment.miss();
     }
+
+    public String getStat() {
+        var res = "";
+        res += "Name:\t%s\nID:\t%s\nTel:\t%s\nAddr:\t%s".formatted(this.name, this._id, this.tel,this.address);
+        return  res;
+    }
 }

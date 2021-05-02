@@ -13,38 +13,58 @@ public class Appointment {
 
     public Appointment_Type type;
     public Calendar startTime;
-    public Calendar endTime;
+    // public Calendar endTime;
     public Patient patient;
     public Physician physician;
     public Room room;
     public Treatment treatment;
     public Appointment_State state;
-    public String notes;
+    public String notes = "";
 
     public Appointment() {}
 
     /**
-     * Constructor for Consultation
+     * Book appointments for visitors.
      *
-     * @param startTime
+     * @param start
      * @param physician
-     * @param patient
+     * @param visitor
      */
-    public Appointment(Calendar startTime, Physician physician, Patient patient) {
-        //    TODO:
+    public Appointment(Calendar start, Physician physician, Visitor visitor) {
+        this._id = Calendar.getInstance().getTimeInMillis();
+        this.startTime = start;
+        this.physician = physician;
+        this.patient = null;
+        this.notes = "Visitor Name: %s".formatted(visitor.name);
+
+        // TODO: Consultation slots and room availability.
     }
 
+    /**
+     * Book appointments for registered patients.
+     *
+     * @param start
+     * @param physician
+     * @param patient
+     * @param treatment
+     */
     public Appointment(Calendar start, Physician physician, Patient patient, Treatment treatment) {
+        this._id = Calendar.getInstance().getTimeInMillis();
         this.startTime = start;
-
-        this.endTime = (Calendar) start.clone();
-        this.endTime.add(Calendar.HOUR_OF_DAY, 2);
-
+        // this.endTime = (Calendar) start.clone();
+        // this.endTime.add(Calendar.HOUR_OF_DAY, 2);
+        // TODO: Physician available
         this.physician = physician;
         this.patient = patient;
         this.treatment = treatment;
+        this.type = Appointment_Type.APPOINTMENT;
 
-        this.room = Room.getAvailableRooms(this).get(0);
+        // DONE: Room available
+        this.room = Room.getRoom(Room.getAvailableRooms(start, this.treatment).get(0));
+    }
+
+    public static ArrayList<Appointment> getAppointments() {
+        return appointments;
     }
 
     public static ArrayList<Appointment> getAppointmentsForPhysician(Physician physician) {
@@ -55,11 +75,37 @@ public class Appointment {
         return result;
     }
 
-    public static void addAppointment(Appointment appointment) {
-        // TODO: Visitor or Patient
-        // TODO: Physician available
-        // TODO: Room available `time`, ``
-        appointments.add(appointment);
+    public boolean book() {
+        // var isVisitor = this.patient == null;
+        this.state = Appointment_State.BOOKED;
+        return appointments.add(this);
+    }
+
+    public void miss() {
+        this.state = Appointment.Appointment_State.MISSED;
+    }
+
+    public void cancel() {
+        this.state = Appointment_State.CANCELLED;
+        // TODO: Change room and physician availability after an appointment is canceled.
+    }
+
+    public void attend() {
+        this.state = Appointment_State.ATTENDED;
+    }
+
+    public String getStat() {
+        // TODO: potential display issue
+        return "ID:\t\t%s\nPatient:\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
+                .formatted(
+                        this._id,
+                        this.patient.name,
+                        this.physician.name,
+                        this.treatment,
+                        this.state,
+                        this.startTime,
+                        this.room,
+                        this.notes);
     }
 
     /**
