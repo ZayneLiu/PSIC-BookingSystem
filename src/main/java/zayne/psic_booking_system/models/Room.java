@@ -26,7 +26,7 @@ public class Room {
         end.set(2021, Calendar.MAY, 30);
         totalDays = end.get(Calendar.DAY_OF_MONTH) - start.get(Calendar.DAY_OF_MONTH) + 1;
 
-        // Room Data
+        // Initial Room Data
         rooms.add(new Room("A", RoomType.GENERAL));
         rooms.add(new Room("B", RoomType.GENERAL));
         rooms.add(new Room("C", RoomType.GENERAL));
@@ -59,10 +59,14 @@ public class Room {
         }
     }
 
-    public Room() {}
-
-    public static Room getRoom(String roomName) {
-        var room = roomName.split("_")[0];
+    /**
+     * Extract room name for room slot string. ("C_10-12" => "C")
+     *
+     * @param roomSlot (e.g. "C_10-12")
+     * @return Room object
+     */
+    public static Room getRoom(String roomSlot) {
+        var room = roomSlot.split("_")[0];
         AtomicReference<Room> result = new AtomicReference<>(null);
         rooms.forEach(
                 item -> {
@@ -71,6 +75,13 @@ public class Room {
         return result.get();
     }
 
+    /**
+     * Get all available rooms for specific appointment (time slot, treatment type).
+     *
+     * @param date The date of specific appointment.
+     * @param treatment The treatment the specific appointment is for.
+     * @return A list of room available for given date and treatment.
+     */
     public static ArrayList<String> getAvailableRooms(Calendar date, Treatment treatment) {
         var result = new ArrayList<String>();
 
@@ -111,7 +122,7 @@ public class Room {
                                 && v) result.add("%s_%s".formatted(tRoom, tTime));
                     }
                 });
-
+        // returns "C_10-12", "B_10-12", etc
         return result;
     }
 
