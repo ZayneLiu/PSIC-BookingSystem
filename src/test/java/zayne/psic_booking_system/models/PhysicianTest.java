@@ -1,6 +1,9 @@
 package zayne.psic_booking_system.models;
 
 import org.junit.Test;
+import zayne.psic_booking_system.utils.DataLoader;
+
+import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,7 +38,60 @@ public class PhysicianTest {
     }
 
     @Test
-    public void getAppointmentTest() {
-        var searchResult = Physician.findPhysiciansByName("Fowler");
+    public void getAppointmentByPhysician() {
+        var physician = new Physician("Test");
+        var patient = new Patient("Test-Patient");
+        var time = Calendar.getInstance();
+
+        time.set(2021, Calendar.MAY, 12, 10, 0);
+        var application =
+                new Appointment(time, physician, patient, Physician.Treatment.MASSAGE).book();
+
+        var actual = physician.getAppointments().size();
+        var expected = 1;
+
+        assertEquals(expected, actual);
     }
+
+    @Test
+    public void getPhysicians() {
+        var p1 = new Physician();
+        var p2 = new Physician();
+
+        Physician.addPhysicians(p1);
+        Physician.addPhysicians(p2);
+        var actual = Physician.getPhysicians().size();
+        var expected = 2;
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getAvailablePhysicians() {
+        DataLoader.load();
+        var date = Calendar.getInstance();
+        date.set(2021, Calendar.MAY, 12, 10, 0);
+        var treatment = Physician.Treatment.GYM_REHABILITATION;
+        var res = Physician.getAvailablePhysicians(date, treatment);
+
+        assertEquals(2, res.size());
+    }
+
+    @Test
+    public void findPhysiciansByName() {}
+
+    @Test
+    public void findPhysiciansByExpertise() {}
+
+    @Test
+    public void getPhysicianByTreatment() {}
+
+    @Test
+    public void getBookedAppointments() {}
+
+    @Test
+    public void getStat() {}
+
+    @Test
+    public void testToString() {}
 }
