@@ -5,12 +5,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import zayne.psic_booking_system.utils.DataLoader;
 
 import java.util.Objects;
 
 public class App extends Application {
 
     public static Scene scene;
+
+    public App() {
+        // TODO: Load predefined data
+        DataLoader.load();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
