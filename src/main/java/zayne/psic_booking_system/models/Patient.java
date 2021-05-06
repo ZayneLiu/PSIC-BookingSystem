@@ -148,10 +148,9 @@ public class Patient extends Person {
         return patients;
     }
 
-    public boolean bookAppointment(Calendar start, Physician physician, Treatment treatment) {
-        var appointment = new Appointment(start, physician, this, treatment);
-
-        return appointment.book();
+    public Appointment bookAppointment(Calendar start, Physician physician, Treatment treatment) {
+        var appointment = new Appointment(start, physician, this, treatment).book();
+        return appointment;
     }
 
     public void attendAppointment(Appointment appointment) {
@@ -168,7 +167,9 @@ public class Patient extends Person {
 
     public String getStat() {
         var res = "";
-        res += "Name:\t%s\nID:\t%s\nTel:\t%s\nAddr:\t%s".formatted(this.name, this._id, this.tel,this.address);
-        return  res;
+        res +=
+                "Name:\t%s\nID:\t%s\nTel:\t%s\nAddr:\t%s"
+                        .formatted(this.name, this._id, this.tel, this.address);
+        return res;
     }
 }

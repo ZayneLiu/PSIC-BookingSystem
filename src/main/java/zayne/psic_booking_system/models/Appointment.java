@@ -75,10 +75,11 @@ public class Appointment {
         return result;
     }
 
-    public boolean book() {
+    public Appointment book() {
         // var isVisitor = this.patient == null;
         this.state = Appointment_State.BOOKED;
-        return appointments.add(this);
+        appointments.add(this);
+        return this;
     }
 
     public void miss() {
