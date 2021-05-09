@@ -4,6 +4,7 @@ import zayne.psic_booking_system.models.Physician.Treatment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** For simplicity each appointment will be a fixed duration of 2 hrs. */
@@ -111,9 +112,31 @@ public class Appointment {
   }
 
   public Appointment book() {
-    // var isVisitor = this.patient == null;
     this.state = Appointment_State.BOOKED;
-    appointments.add(this);
+    // var isVisitor = this.patient == null;
+    var isValid = new AtomicBoolean(true);
+    appointments.forEach(
+        appointment -> {
+          var isCanceled = appointment.state == Appointment_State.CANCELLED;
+          if (isCanceled) return;
+
+          var isSameMonth =
+              appointment.startTime.get(Calendar.MONTH) == this.startTime.get(Calendar.MONTH);
+          var isSameDay =
+              appointment.startTime.get(Calendar.DAY_OF_MONTH)
+                  == this.startTime.get(Calendar.DAY_OF_MONTH);
+          var isSameTime =
+              appointment.startTime.get(Calendar.HOUR_OF_DAY)
+                  == this.startTime.get(Calendar.HOUR_OF_DAY);
+          var isSameDate = isSameMonth && isSameDay && isSameTime;
+          var isSamePhysician = appointment.physician._id == this.physician._id;
+
+          if (isSameDate && isSamePhysician) isValid.set(false);
+        });
+
+    if (isValid.get()) appointments.add(this);
+    else return null;
+
     return this;
   }
 
@@ -142,10 +165,11 @@ public class Appointment {
             this.physician.name,
             this.treatment,
             this.state,
-            "%02d-%02d"
+            "%02d-%02d %s:00"
                 .formatted(
                     this.startTime.get(Calendar.MONTH) + 1,
-                    this.startTime.get(Calendar.DAY_OF_MONTH)),
+                    this.startTime.get(Calendar.DAY_OF_MONTH),
+                    this.startTime.get(Calendar.HOUR_OF_DAY)),
             this.room.roomName,
             this.notes);
   }

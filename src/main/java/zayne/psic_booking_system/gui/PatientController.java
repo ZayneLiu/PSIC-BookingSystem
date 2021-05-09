@@ -163,7 +163,7 @@ public class PatientController {
                   // Get 4 slots on given day.
                   // e.g. `May-4` -> `[May-4-10:00, May-4-12:00, May-4-14:00, May-4-16:00]`
                   var slots = Helper.getSlots(calendar);
-                  System.out.println(slots.size());
+                  // System.out.println(slots.size());
 
                   physician.treatment.forEach(
                       treatment -> {
@@ -240,9 +240,12 @@ public class PatientController {
     // var room = Room.getRoom(data[4].split("-")[data[4].split("-").length - 1]);
 
     var appointment = new Appointment(date, physician, patient, treatment).book();
-
-    DataController.controller.refreshData();
-    System.out.println(appointment.getStat());
+    if (appointment == null) labelErrMsg.setText("NOT booked (duplicated).");
+    else {
+      labelErrMsg.setText("Appointment booked!");
+      DataController.controller.refreshData();
+      System.out.println(appointment.getStat());
+    }
   }
 
   public void register() {
