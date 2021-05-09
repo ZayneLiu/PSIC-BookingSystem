@@ -120,18 +120,7 @@ public class Appointment {
           var isCanceled = appointment.state == Appointment_State.CANCELLED;
           if (isCanceled) return;
 
-          var isSameMonth =
-              appointment.startTime.get(Calendar.MONTH) == this.startTime.get(Calendar.MONTH);
-          var isSameDay =
-              appointment.startTime.get(Calendar.DAY_OF_MONTH)
-                  == this.startTime.get(Calendar.DAY_OF_MONTH);
-          var isSameTime =
-              appointment.startTime.get(Calendar.HOUR_OF_DAY)
-                  == this.startTime.get(Calendar.HOUR_OF_DAY);
-          var isSameDate = isSameMonth && isSameDay && isSameTime;
-          var isSamePhysician = appointment.physician._id == this.physician._id;
-
-          if (isSameDate && isSamePhysician) isValid.set(false);
+          if (appointment.equals(this)) isValid.set(false);
         });
 
     if (isValid.get()) appointments.add(this);
@@ -172,6 +161,26 @@ public class Appointment {
                     this.startTime.get(Calendar.HOUR_OF_DAY)),
             this.room.roomName,
             this.notes);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Appointment appointment = (Appointment) o;
+
+    var isSameMonth =
+        appointment.startTime.get(Calendar.MONTH) == this.startTime.get(Calendar.MONTH);
+    var isSameDay =
+        appointment.startTime.get(Calendar.DAY_OF_MONTH)
+            == this.startTime.get(Calendar.DAY_OF_MONTH);
+    var isSameTime =
+        appointment.startTime.get(Calendar.HOUR_OF_DAY) == this.startTime.get(Calendar.HOUR_OF_DAY);
+    var isSameDate = isSameMonth && isSameDay && isSameTime;
+    var isSamePhysician = appointment.physician._id == this.physician._id;
+
+    return isSameDate && isSamePhysician;
   }
 
   /**
