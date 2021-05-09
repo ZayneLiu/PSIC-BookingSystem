@@ -7,7 +7,7 @@ import java.util.Calendar;
 public class RoomTest {
     @Test
     public void initTest() {
-        var a = Room.allSlots;
+        // var a = Room.allSlots;
     }
 
     @Test
@@ -15,8 +15,8 @@ public class RoomTest {
 
     @Test
     public void getAvailableRooms() {
-        var date = Calendar.getInstance();
-        date.set(2021, Calendar.MAY, 12, 10, 0);
-        Room.getAvailableRooms(date, Physician.Treatment.MASSAGE);
+        // var date = Calendar.getInstance();
+        // date.set(2021, Calendar.MAY, 12, 10, 0);
+        // Room.getAvailableRooms(date, Physician.Treatment.MASSAGE);
     }
 }
