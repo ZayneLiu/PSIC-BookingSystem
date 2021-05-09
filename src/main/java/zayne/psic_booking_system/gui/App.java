@@ -11,29 +11,29 @@ import java.util.Objects;
 
 public class App extends Application {
 
-    public static Scene scene;
+  public static Scene scene;
 
-    public App() {
-        // TODO: Load predefined data
-        DataLoader.load();
-    }
+  public App() {
+    // TODO: Load predefined data
+    DataLoader.load();
+  }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        var res = getClass().getResource("homepage.fxml");
-        Parent fxml = FXMLLoader.load(Objects.requireNonNull(res));
+  public static void main(String[] args) {
+    launch(args);
+  }
 
-        scene = new Scene(fxml, 640, 700);
-        // Load `app.css` to the scene
-        var resCss = getClass().getResource("app.css");
-        var css = Objects.requireNonNull(resCss).toExternalForm();
-        scene.getStylesheets().add(css);
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+    var res = getClass().getResource("homepage.fxml");
+    Parent fxml = FXMLLoader.load(Objects.requireNonNull(res));
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+    scene = new Scene(fxml, 640, 700);
+    // Load `app.css` to the scene
+    var resCss = getClass().getResource("app.css");
+    var css = Objects.requireNonNull(resCss).toExternalForm();
+    scene.getStylesheets().add(css);
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    primaryStage.setScene(scene);
+    primaryStage.show();
+  }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>/Users/zayne/Workspace/Java/PSIC-BookingSystem/src/main/java/zayne/psic_booking_system</OriginalElement>
+  <nodes>
+    <node x="501.0" y="605.0">zayne.psic_booking_system.models.Room</node>
+    <node x="0.0" y="360.5">zayne.psic_booking_system.models.Visitor</node>
+    <node x="159.0" y="271.5">zayne.psic_booking_system.models.Patient</node>
+    <node x="589.0" y="216.0">zayne.psic_booking_system.models.Physician</node>
+    <node x="-363.0" y="426.5">zayne.psic_booking_system.utils.Report</node>
+    <node x="293.0" y="0.0">zayne.psic_booking_system.models.Person</node>
+    <node x="0.0" y="605.0">zayne.psic_booking_system.models.Appointment</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="zayne.psic_booking_system.models.Visitor" target="zayne.psic_booking_system.models.Person" relationship="GENERALIZATION">
+      <point x="0.0" y="-27.5" />
+      <point x="69.5" y="191.0" />
+      <point x="364.0" y="191.0" />
+      <point x="0.0" y="83.0" />
+    </edge>
+    <edge source="zayne.psic_booking_system.models.Physician" target="zayne.psic_booking_system.models.Person" relationship="GENERALIZATION">
+      <point x="0.0" y="-172.0" />
+      <point x="783.5" y="191.0" />
+      <point x="364.0" y="191.0" />
+      <point x="0.0" y="83.0" />
+    </edge>
+    <edge source="zayne.psic_booking_system.models.Patient" target="zayne.psic_booking_system.models.Person" relationship="GENERALIZATION">
+      <point x="0.0" y="-116.5" />
+      <point x="0.0" y="83.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.8113207547169812" showDependencies="false" x="489.0" y="567.5" />
+  <SelectedNodes>
+    <node>zayne.psic_booking_system.utils.Report</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

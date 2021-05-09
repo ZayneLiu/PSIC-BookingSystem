@@ -21,7 +21,7 @@ public class PhysicianTest {
 
     @Test
     public void searchByNameTest() {
-        var searchResult = Physician.findPhysiciansByName("Fowler");
+        var searchResult = Physician.getPhysiciansByName("Fowler");
         for (var item : searchResult) {
             System.out.println(item);
         }
@@ -30,7 +30,7 @@ public class PhysicianTest {
 
     @Test
     public void searchByExpertiseTest() {
-        var searchResult = Physician.findPhysiciansByExpertise("Physiotherapy");
+        var searchResult = Physician.getPhysiciansByExpertise("Physiotherapy");
         for (var item : searchResult) {
             System.out.println(item);
         }

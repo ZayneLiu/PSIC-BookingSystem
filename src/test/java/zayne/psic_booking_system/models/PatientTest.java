@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import java.util.Calendar;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class PatientTest {
     public static Patient patient = new Patient("Test", "123456789", "Somewhere");
 
@@ -19,7 +22,8 @@ public class PatientTest {
     public void bookAppointmentTest() {
         var physician = new Physician("TestPhysician");
         var start = Calendar.getInstance();
-        start.set(2021, Calendar.MAY, 1, 10, 0);
-        patient.bookAppointment(start, physician, Physician.Treatment.MASSAGE);
+        start.set(2021, Calendar.MAY, 5, 10, 0);
+        var res = patient.bookAppointment(start, physician, Physician.Treatment.MASSAGE);
+        assertEquals("Appointment booking failed", res.physician._id, physician._id);
     }
 }

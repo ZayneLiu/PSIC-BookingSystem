@@ -9,33 +9,33 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 
 public class HomePageController {
-    public static HomePageController controller;
+  public static HomePageController controller;
 
-    public VBox vBoxMain;
-    public VBox vBoxPhysician;
-    public VBox vBoxPatient;
-    public VBox vBoxReport;
+  public VBox vBoxMain;
+  public VBox vBoxPhysician;
+  public VBox vBoxPatient;
+  public VBox vBoxReport;
 
-    public HBox hBoxData;
+  public HBox hBoxData;
 
-    @FXML
-    public void initialize() throws IOException {
-        // Retrieve and load fxml
-        var resPatient = PatientController.class.getResource("patient-subsystem.fxml");
-        assert resPatient != null;
+  public static void switchContent(Parent to) {}
 
-        VBox fxmlPatient = FXMLLoader.load(resPatient);
-        vBoxPatient.getChildren().addAll(fxmlPatient.getChildren());
+  @FXML
+  public void initialize() throws IOException {
+    // Retrieve and load fxml
+    var resPatient = PatientController.class.getResource("patient-subsystem.fxml");
+    assert resPatient != null;
 
-        // Retrieve and load fxml
-        var resData = PatientController.class.getResource("data.fxml");
-        assert resData != null;
+    VBox fxmlPatient = FXMLLoader.load(resPatient);
+    vBoxPatient.getChildren().addAll(fxmlPatient.getChildren());
 
-        HBox fxmlData = FXMLLoader.load(resData);
-        hBoxData.getChildren().addAll(fxmlData.getChildren());
+    // Retrieve and load fxml
+    var resData = PatientController.class.getResource("data.fxml");
+    assert resData != null;
 
-        controller = this;
-    }
+    HBox fxmlData = FXMLLoader.load(resData);
+    hBoxData.getChildren().addAll(fxmlData.getChildren());
 
-    public static void switchContent(Parent to) {}
+    controller = this;
+  }
 }
