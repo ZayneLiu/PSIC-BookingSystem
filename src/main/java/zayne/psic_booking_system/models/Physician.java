@@ -195,7 +195,7 @@ public class Physician extends Person {
     ACUPUNCTURE("Acupuncture"),
     POOL_REHABILITATION("Pool_Rehabilitation"),
     GYM_REHABILITATION("Gym_Rehabilitation"),
-    SPINE_AND_JOINTS_MOBILISATION("Spine_And_Joints_Mobilisation"),
+    SPINE_JOINTS_MOBILISATION("Spine_Joints_Mobilisation"),
     NEURAL_MOBILISATION("Neural_Mobilisation");
 
     private final String name;

@@ -122,6 +122,7 @@ public class PatientController {
 
   public void search() {
     labelErrMsg.setText("");
+    listViewResult.getItems().clear();
     var searchByName = choiceBoxSearchBy.getValue().equals("Name");
 
     if (choiceBoxPatient.getValue() == null) {
@@ -169,7 +170,7 @@ public class PatientController {
                         slots.forEach(
                             slot -> {
                               var resAppointment = Appointment.getAppointment(slot, physician);
-                              System.out.println(resAppointment);
+                              // System.out.println(resAppointment);
                               // if (physician.consultHours[0] == slot.get(Calendar.DAY_OF_WEEK)
                               //     && physician.consultHours[1] == slot.get(Calendar.HOUR_OF_DAY))
                               if (resAppointment == null) {
@@ -182,18 +183,21 @@ public class PatientController {
                                 var res = new StringBuilder();
                                 res.append("%02d".formatted(calendar.get(Calendar.MONTH) + 1))
                                     .append("-")
-                                    .append("%02d\t".formatted(calendar.get(Calendar.DAY_OF_MONTH)))
+                                    .append("%02d ".formatted(calendar.get(Calendar.DAY_OF_MONTH)))
                                     .append(days[calendar.get(Calendar.DAY_OF_WEEK) - 1])
-                                    .append("\t")
+                                    .append(" ")
                                     .append(slot.get(Calendar.HOUR_OF_DAY))
-                                    .append(":00\t")
+                                    .append(":00  ")
                                     .append(physician.name)
-                                    .append("\tRoom-")
-                                    .append(physician.room.roomName)
+                                    .append("\t");
+
+                                if (physician.room.roomName.length() == 1) res.append("Room-");
+
+                                res.append(physician.room.roomName)
                                     .append("\t")
                                     .append(treatment.toString());
 
-                                System.out.println(res);
+                                // System.out.println(res);
                                 this.listViewResult.getItems().add(res.toString());
                               }
                             });
@@ -201,6 +205,10 @@ public class PatientController {
                 });
           });
 
+      labelErrMsg.setText(
+          physicians.size() == 0
+              ? "No results found."
+              : "%d physician(s) found.".formatted(physicians.size()));
     } else if (expertise != null) {
       System.out.printf("Search by expertise %s - %s%n", expertise);
       // TODO： get target expertise's all slot and availability.

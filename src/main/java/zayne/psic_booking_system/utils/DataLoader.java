@@ -17,7 +17,7 @@ public class DataLoader {
     physician1.tel = "+4407866442335";
     physician1.address = "511 Hawthorne Street, Duryea, New Hampshire, 5065";
     physician1.expertise.add(Physician.Expertise.OSTEOPATHY);
-    physician1.treatment.add(Physician.Treatment.SPINE_AND_JOINTS_MOBILISATION);
+    physician1.treatment.add(Physician.Treatment.SPINE_JOINTS_MOBILISATION);
     physician1.treatment.add(Physician.Treatment.NEURAL_MOBILISATION);
     physician1.room = Room.getRoom("A");
     physician1.workingDays[0] = Calendar.FRIDAY;
