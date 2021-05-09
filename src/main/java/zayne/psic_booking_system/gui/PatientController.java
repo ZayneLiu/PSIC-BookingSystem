@@ -7,7 +7,6 @@ import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
 import zayne.psic_booking_system.utils.Helper;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 
 public class PatientController {
@@ -49,27 +48,21 @@ public class PatientController {
 
     choiceBoxExpertise.setDisable(true);
     radioBtnIsPatient.setSelected(true);
-    // datePickerPatient.setShowWeekNumbers(false);
-    // datePickerPatient.setDisable(true);
-    // datePickerPatient.setVisible(false);
 
-    var minDate = LocalDate.of(2021, 5, 3);
-    var maxDate = LocalDate.of(2021, 5, 30);
-    // datePickerPatient.setDayCellFactory(
-    //     d ->
-    //         new DateCell() {
-    //           @Override
-    //           public void updateItem(LocalDate item, boolean empty) {
-    //             super.updateItem(item, empty);
-    //             setDisable(
-    //                 item.isBefore(minDate)
-    //                     || item.isAfter(maxDate)
-    //                     || item.getDayOfWeek() == DayOfWeek.SATURDAY
-    //                     || item.getDayOfWeek() == DayOfWeek.SUNDAY);
-    //           }
-    //         });
-    // datePickerPatient.valueProperty().addListener((observable, oldValue, newValue) -> {});
+    setupPropertyBindings();
+    setupEventListeners();
 
+    loadExpertise();
+
+    refreshPatientData();
+  }
+
+  private void loadExpertise() {
+    for (var v : Physician.Expertise.values())
+      choiceBoxExpertise.getItems().add(v.name().toLowerCase());
+  }
+
+  private void setupEventListeners() {
     choiceBoxSearchBy
         .valueProperty()
         .addListener(
@@ -80,13 +73,6 @@ public class PatientController {
               // textFieldKeyword.setText(DEFAULT_KEYWORD);
             });
 
-    choiceBoxPatient
-        .valueProperty()
-        .addListener(
-            (observable, oldValue, newValue) -> {
-              var patient = Patient.findPatient(newValue);
-              labelPatientID.setText("Patient ID: " + patient._id);
-            });
     choiceBoxPatientAppointment
         .valueProperty()
         .addListener(
@@ -94,9 +80,14 @@ public class PatientController {
               var patient = Patient.findPatient(newV);
               labelAppointmentPatientID.setText(String.valueOf(patient._id));
             });
-    choiceBoxAppointment
-        .disableProperty()
-        .bind(choiceBoxPatientAppointment.valueProperty().isEqualTo(""));
+
+    choiceBoxPatient
+        .valueProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              var patient = Patient.findPatient(newValue);
+              labelPatientID.setText("Patient ID: " + patient._id);
+            });
 
     radioBtnIsVisitor
         .onMouseClickedProperty()
@@ -105,42 +96,18 @@ public class PatientController {
               // TODO: Change slots showing to consultation.
             });
 
-    loadExpertise();
-    refreshPatientData();
-
-    choiceBoxPatient.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
-    labelPatientID.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
-
-    // .visibleProperty().bindBidirectional(choiceBoxSearchBy.valueProperty()equals());
     btnSearch.setOnMouseClicked(mouseEvent -> search());
+    btnBookAppointment.setOnMouseClicked(mouseEvent -> book());
     btnPatientRegistration.setOnMouseClicked(event -> register());
   }
 
-  private void loadExpertise() {
-    for (var v : Physician.Expertise.values())
-      choiceBoxExpertise.getItems().add(v.name().toLowerCase());
-  }
+  private void setupPropertyBindings() {
+    choiceBoxAppointment
+        .disableProperty()
+        .bind(choiceBoxPatientAppointment.valueProperty().isEqualTo(""));
 
-  public void register() {
-    labelPatientRegisterErrMsg.setText("");
-    var name = textPatientRegisterName.getText().trim();
-    var tel = textPatientRegisterTel.getText().trim();
-    var addr = textPatientRegisterAddr.getText().trim();
-
-    if (name.equals("") || tel.equals("") || addr.equals("")) {
-      labelPatientRegisterErrMsg.setText("Please fill in all fields.");
-      return;
-    }
-
-    var patient = new Patient(name, tel, addr);
-    if (Patient.registerPatient(patient)) {
-      textPatientRegisterName.setText("");
-      textPatientRegisterTel.setText("");
-      textPatientRegisterAddr.setText("");
-
-      labelPatientRegisterErrMsg.setText("Successfully registered.");
-      refreshPatientData();
-    }
+    choiceBoxPatient.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
+    labelPatientID.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
   }
 
   public void refreshPatientData() {
@@ -166,13 +133,11 @@ public class PatientController {
     var keyword = textFieldKeyword.getText().trim();
     var expertise = choiceBoxExpertise.getValue();
 
-
-
     if (searchByName) {
-        if (keyword.equals("")) {
-            labelErrMsg.setText("Please Enter Search Keyword!");
-            return;
-        }
+      if (keyword.equals("")) {
+        labelErrMsg.setText("Please Enter Search Keyword!");
+        return;
+      }
       System.out.printf("Search by name %s - %s\n", keyword, patient);
 
       var physicians = Physician.getPhysiciansByName(keyword.strip());
@@ -199,20 +164,26 @@ public class PatientController {
                   var slots = Helper.getSlots(calendar);
                   System.out.println(slots.size());
 
-                  slots.forEach(
-                      slot -> {
-                        var resAppointment = Appointment.getAppointment(slot, physician);
-                        System.out.println(resAppointment);
-                        // if (physician.consultHours[0] == slot.get(Calendar.DAY_OF_WEEK)
-                        //     && physician.consultHours[1] == slot.get(Calendar.HOUR_OF_DAY))
-                        if (resAppointment == null) {
+                  physician.treatment.forEach(
+                      treatment -> {
+                        slots.forEach(
+                            slot -> {
+                              var resAppointment = Appointment.getAppointment(slot, physician);
+                              System.out.println(resAppointment);
+                              // if (physician.consultHours[0] == slot.get(Calendar.DAY_OF_WEEK)
+                              //     && physician.consultHours[1] == slot.get(Calendar.HOUR_OF_DAY))
+                              if (resAppointment == null) {
+                                // var map =
+                                //     calendar.getDisplayNames(
+                                //         Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.ENGLISH);
+                                String[] days =
+                                    new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
-                          physician.treatment.forEach(
-                              treatment -> {
                                 var res = new StringBuilder();
                                 res.append("%02d".formatted(calendar.get(Calendar.MONTH) + 1))
                                     .append("-")
-                                    .append("%02d".formatted(calendar.get(Calendar.DAY_OF_MONTH)))
+                                    .append("%02d\t".formatted(calendar.get(Calendar.DAY_OF_MONTH)))
+                                    .append(days[calendar.get(Calendar.DAY_OF_WEEK) - 1])
                                     .append("\t")
                                     .append(slot.get(Calendar.HOUR_OF_DAY))
                                     .append(":00\t")
@@ -224,8 +195,8 @@ public class PatientController {
 
                                 System.out.println(res);
                                 this.listViewResult.getItems().add(res.toString());
-                              });
-                        }
+                              }
+                            });
                       });
                 });
           });
@@ -240,5 +211,29 @@ public class PatientController {
     }
     // System.out.println(choiceBoxExpertise.getValue());
     // if (searchBy)
+  }
+
+  public void book() {}
+
+  public void register() {
+    labelPatientRegisterErrMsg.setText("");
+    var name = textPatientRegisterName.getText().trim();
+    var tel = textPatientRegisterTel.getText().trim();
+    var addr = textPatientRegisterAddr.getText().trim();
+
+    if (name.equals("") || tel.equals("") || addr.equals("")) {
+      labelPatientRegisterErrMsg.setText("Please fill in all fields.");
+      return;
+    }
+
+    var patient = new Patient(name, tel, addr);
+    if (Patient.registerPatient(patient)) {
+      textPatientRegisterName.setText("");
+      textPatientRegisterTel.setText("");
+      textPatientRegisterAddr.setText("");
+
+      labelPatientRegisterErrMsg.setText("Successfully registered.");
+      refreshPatientData();
+    }
   }
 }
