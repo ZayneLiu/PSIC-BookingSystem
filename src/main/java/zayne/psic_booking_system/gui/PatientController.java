@@ -188,7 +188,7 @@ public class PatientController {
                                     .append(" ")
                                     .append(slot.get(Calendar.HOUR_OF_DAY))
                                     .append(":00  ")
-                                    .append(physician.name)
+                                    .append(String.join("_", physician.name.split(" ")))
                                     .append("\t");
 
                                 if (physician.room.roomName.length() == 1) res.append("Room-");
