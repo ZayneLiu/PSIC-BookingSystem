@@ -9,29 +9,23 @@ import java.util.concurrent.atomic.AtomicReference;
 /** For simplicity each appointment will be a fixed duration of 2 hrs. */
 public class Appointment {
 
-    public Appointment_Type type;
-    public Calendar startTime;
-    // public Calendar endTime;
-    public Patient patient;
-    public Physician physician;
-    public Room room;
-    public Treatment treatment;
-    public Appointment_State state;
-    public String notes = "";
+  public static ArrayList<Appointment> appointments = new ArrayList<>();
+  public  static Appointment pendingAppointment = null;
+  public long _id;
 
-     * @param visitor
-     */
-    public Appointment(Calendar start, Physician physician, Visitor visitor) {
-        this._id = Calendar.getInstance().getTimeInMillis();
-        this.startTime = start;
-        this.physician = physician;
-        this.patient = null;
-        this.notes = "Visitor Name: %s".formatted(visitor.name);
-
-        // TODO: Consultation slots and room availability.
+  public Appointment_Type type;
+  public Calendar startTime;
+  // public Calendar endTime;
+  public Patient patient;
+  public Physician physician;
+  public Room room;
+  public Treatment treatment;
+  public Appointment_State state;
   public String notes = "";
 
-  public Appointment() {}
+  public Appointment() {
+    this._id = Calendar.getInstance().getTimeInMillis();
+  }
 
   /**
    * Book appointments for visitors.
@@ -80,7 +74,8 @@ public class Appointment {
     this.type = Appointment_Type.APPOINTMENT;
 
     // DONE: Room available
-    this.room = Room.getRoom(Room.getAvailableRooms(start, this.treatment).get(0));
+    // this.room = Room.getRoom(Room.getAvailableRooms(start, this.treatment).get(0));
+    this.room = physician.room;
   }
 
   public static ArrayList<Appointment> getAppointments() {
