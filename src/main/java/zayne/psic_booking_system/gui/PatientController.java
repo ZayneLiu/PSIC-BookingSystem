@@ -86,7 +86,7 @@ public class PatientController {
         .addListener(
             (observable, oldValue, newValue) -> {
               var patient = Patient.findPatient(newValue);
-              labelPatientID.setText(String.valueOf(patient._id));
+              labelPatientID.setText("Patient ID: " + patient._id);
             });
     choiceBoxPatientAppointment
         .valueProperty()
@@ -158,20 +158,88 @@ public class PatientController {
     labelErrMsg.setText("");
     var searchByName = choiceBoxSearchBy.getValue().equals("Name");
 
-    if (searchByName) {
-      // Physician.getPhysiciansByName(textFieldKeyword.getText().trim());
-    }
     if (choiceBoxPatient.getValue() == null) {
-
       labelErrMsg.setText("Please Select Patient!");
       return;
     }
 
-        /* TODO: Display result.
-         *  Physician name
-         *  Date & Time
-         *  Room
-         *  Treatment
-         * */
+    var patient = Patient.findPatient(choiceBoxPatient.getValue());
+    var keyword = textFieldKeyword.getText().trim();
+    var expertise = choiceBoxExpertise.getValue();
+
+
+
+    if (searchByName) {
+        if (keyword.equals("")) {
+            labelErrMsg.setText("Please Enter Search Keyword!");
+            return;
+        }
+      System.out.printf("Search by name %s - %s\n", keyword, patient);
+
+      var physicians = Physician.getPhysiciansByName(keyword.strip());
+      System.out.printf("Physicians: %s\n", physicians);
+
+      // Done： get target physician's all slot and availability
+      physicians.forEach(
+          physician -> {
+            // Get all dates which the physician is working,
+            // based on the `workingDays` of the physician.
+            // e.g. `[Tue, Fri]` -> `[May-4, May-7, May-11, May-14, May-18, May-21, May-25, May-28]`
+            var workingDays = physician.getWorkingDates();
+            System.out.printf("Workdays: %s\n", workingDays.size());
+            workingDays.forEach(
+                day -> {
+                  // System.out.println(day.get(Calendar.DAY_OF_MONTH));
+                });
+
+            workingDays.forEach(
+                calendar -> {
+                  // var appointments = new ArrayList<Appointment>();
+                  // Get 4 slots on given day.
+                  // e.g. `May-4` -> `[May-4-10:00, May-4-12:00, May-4-14:00, May-4-16:00]`
+                  var slots = Helper.getSlots(calendar);
+                  System.out.println(slots.size());
+
+                  slots.forEach(
+                      slot -> {
+                        var resAppointment = Appointment.getAppointment(slot, physician);
+                        System.out.println(resAppointment);
+                        // if (physician.consultHours[0] == slot.get(Calendar.DAY_OF_WEEK)
+                        //     && physician.consultHours[1] == slot.get(Calendar.HOUR_OF_DAY))
+                        if (resAppointment == null) {
+
+                          physician.treatment.forEach(
+                              treatment -> {
+                                var res = new StringBuilder();
+                                res.append("%02d".formatted(calendar.get(Calendar.MONTH) + 1))
+                                    .append("-")
+                                    .append("%02d".formatted(calendar.get(Calendar.DAY_OF_MONTH)))
+                                    .append("\t")
+                                    .append(slot.get(Calendar.HOUR_OF_DAY))
+                                    .append(":00\t")
+                                    .append(physician.name)
+                                    .append("\tRoom-")
+                                    .append(physician.room.roomName)
+                                    .append("\t")
+                                    .append(treatment.toString());
+
+                                System.out.println(res);
+                                this.listViewResult.getItems().add(res.toString());
+                              });
+                        }
+                      });
+                });
+          });
+
+    } else if (expertise != null) {
+      System.out.printf("Search by expertise %s - %s%n", expertise);
+      // TODO： get target expertise's all slot and availability.
+      // TODO: expertise -> treatments mapping
+
+    } else {
+      labelErrMsg.setText("Fill in all fields!!");
     }
+    // System.out.println(choiceBoxExpertise.getValue());
+    // if (searchBy)
+  }
 }
