@@ -21,6 +21,8 @@ public class Physician extends Person {
   /** Consultation hours is 2hrs each week. so only start time will be stored. */
   public Integer[] consultHours = new Integer[2];
 
+  public Room room;
+
   public Physician() {}
 
   public Physician(String name) {
@@ -137,9 +139,15 @@ public class Physician extends Person {
     start.set(2021, Calendar.MAY, 1);
 
     do {
-      if (start.get(Calendar.DAY_OF_WEEK) == (this.workingDays[0] + 1)) resDays.add(start);
 
+      if (Arrays.stream(this.workingDays)
+          .anyMatch((day) -> day == start.get(Calendar.DAY_OF_WEEK))) {
+        resDays.add((Calendar) start.clone());
+        System.out.println(start.get(Calendar.DAY_OF_MONTH));
+
+      }
       start.add(Calendar.DAY_OF_MONTH, 1);
+
     } while (start.get(Calendar.MONTH) == Calendar.MAY);
     return resDays;
   }
@@ -147,56 +155,29 @@ public class Physician extends Person {
   public ArrayList<Appointment> getAppointments() {
     return Appointment.getAppointmentsForPhysician(this);
   }
-  // public static void
-
-  // public void CheckIn(Appointment appointment, Patient patient) {
-  //     // Check the appointment with correct physician and patient.
-  //     if (appointment.physician == this && appointment.patient == patient)
-  //         // Set the state of `isAttended` to true.
-  //         appointment.state = Appointment.Appointment_State.ATTENDED;
-  //
-  //     // DONE: physician check-in implementation.
-  // }
 
   public String getStat() {
     var res = "Name:\t%s\nID:\t\t%s\nTel:\t\t%s\n".formatted(this.name, this._id, this.tel);
 
     String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
-    res += "Work:\t%s, %s\n".formatted(days[this.workingDays[0]], days[this.workingDays[1]]);
+    res +=
+        "Work:\t%s, %s\n".formatted(days[this.workingDays[0] - 1], days[this.workingDays[1] - 1]);
 
-    res += "Consult:\t%s - %s:00".formatted(days[this.consultHours[0]], this.consultHours[1]);
+    res += "Consult:\t%s - %s:00".formatted(days[this.consultHours[0] - 1], this.consultHours[1]);
 
     return res;
   }
 
   public String toString() {
-    // StringBuilder result = new StringBuilder("==========================\n");
-    // for (var field : this.getClass().getFields()) {
-    //     try {
-    //         if (field.getName().equals("expertise") || field.getName().equals("treatment")) {
-    //             StringBuilder listDpkg = new StringBuilder("[ ");
-    //             for (var item : (ArrayList) field.get(this)) {
-    //                 listDpkg.append("'%s', ".formatted(item));
-    //             }
-    //             listDpkg.append(" ]");
-    //             result.append("%s: %s\n".formatted(field.getName(), listDpkg.toString()));
-    //         } else {
-    //
-    //             result.append("%s: %s\n".formatted(field.getName(), field.get(this)));
-    //         }
-    //         // System.out.println("%s: %s\n".formatted(field.getName(), field.get(this)));
-    //     } catch (IllegalArgumentException | IllegalAccessException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
     return this.name;
   }
 
   // #region enum definitions.
   public enum Expertise {
     PHYSIOTHERAPY("Physiotherapy"),
-    REHABILITATION("Rehabilitation");
+    REHABILITATION("Rehabilitation"),
+    OSTEOPATHY("Osteopathy");
 
     private final String name;
 
