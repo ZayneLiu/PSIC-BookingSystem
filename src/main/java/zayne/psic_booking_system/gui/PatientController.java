@@ -7,7 +7,6 @@ import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
 import zayne.psic_booking_system.utils.Helper;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Calendar;
 
@@ -39,7 +38,7 @@ public class PatientController {
   public Button btnAttendAppointment;
   public Button btnMissAppointment;
   public Button btnCancelAppointment;
-  public DatePicker datePickerPatient;
+  // public DatePicker datePickerPatient;
 
   /* method `initialize()` is called after the constructor. */
   @FXML
@@ -50,26 +49,26 @@ public class PatientController {
 
     choiceBoxExpertise.setDisable(true);
     radioBtnIsPatient.setSelected(true);
-    datePickerPatient.setShowWeekNumbers(false);
-    datePickerPatient.setDisable(true);
-    datePickerPatient.setVisible(false);
+    // datePickerPatient.setShowWeekNumbers(false);
+    // datePickerPatient.setDisable(true);
+    // datePickerPatient.setVisible(false);
 
     var minDate = LocalDate.of(2021, 5, 3);
     var maxDate = LocalDate.of(2021, 5, 30);
-    datePickerPatient.setDayCellFactory(
-        d ->
-            new DateCell() {
-              @Override
-              public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                setDisable(
-                    item.isBefore(minDate)
-                        || item.isAfter(maxDate)
-                        || item.getDayOfWeek() == DayOfWeek.SATURDAY
-                        || item.getDayOfWeek() == DayOfWeek.SUNDAY);
-              }
-            });
-    datePickerPatient.valueProperty().addListener((observable, oldValue, newValue) -> {});
+    // datePickerPatient.setDayCellFactory(
+    //     d ->
+    //         new DateCell() {
+    //           @Override
+    //           public void updateItem(LocalDate item, boolean empty) {
+    //             super.updateItem(item, empty);
+    //             setDisable(
+    //                 item.isBefore(minDate)
+    //                     || item.isAfter(maxDate)
+    //                     || item.getDayOfWeek() == DayOfWeek.SATURDAY
+    //                     || item.getDayOfWeek() == DayOfWeek.SUNDAY);
+    //           }
+    //         });
+    // datePickerPatient.valueProperty().addListener((observable, oldValue, newValue) -> {});
 
     choiceBoxSearchBy
         .valueProperty()
