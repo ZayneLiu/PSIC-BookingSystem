@@ -113,7 +113,7 @@ public class Patient extends Person {
     this.address = address;
   }
 
-  public static Patient findPatient(String name) {
+  public static Patient getPatient(String name) {
     // DONE: find specific patient by name.
     Patient result = null;
     for (Patient patient : patients) {
@@ -168,7 +168,7 @@ public class Patient extends Person {
   public String getStat() {
     var res = "";
     res +=
-        "Name:\t%s\nID:\t%s\nTel:\t%s\nAddr:\t%s"
+        "Name:\t%s\nID:\t\t%s\nTel:\t\t%s\nAddr:\t%s"
             .formatted(this.name, this._id, this.tel, this.address);
     return res;
   }

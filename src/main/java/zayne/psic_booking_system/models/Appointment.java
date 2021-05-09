@@ -4,13 +4,13 @@ import zayne.psic_booking_system.models.Physician.Treatment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** For simplicity each appointment will be a fixed duration of 2 hrs. */
 public class Appointment {
 
   public static ArrayList<Appointment> appointments = new ArrayList<>();
-  public  static Appointment pendingAppointment = null;
   public long _id;
 
   public Appointment_Type type;
@@ -112,9 +112,20 @@ public class Appointment {
   }
 
   public Appointment book() {
-    // var isVisitor = this.patient == null;
     this.state = Appointment_State.BOOKED;
-    appointments.add(this);
+    // var isVisitor = this.patient == null;
+    var isValid = new AtomicBoolean(true);
+    appointments.forEach(
+        appointment -> {
+          var isCanceled = appointment.state == Appointment_State.CANCELLED;
+          if (isCanceled) return;
+
+          if (appointment.equals(this)) isValid.set(false);
+        });
+
+    if (isValid.get()) appointments.add(this);
+    else return null;
+
     return this;
   }
 
@@ -135,17 +146,41 @@ public class Appointment {
   }
 
   public String getStat() {
-    // TODO: potential display issue
-    return "ID:\t\t%s\nPatient:\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
+    // Done: potential display issue
+    return "ID:\t\t\t%s\nPatient:\t\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
         .formatted(
             this._id,
             this.patient.name,
             this.physician.name,
             this.treatment,
             this.state,
-            this.startTime,
-            this.room,
+            "%02d-%02d %s:00"
+                .formatted(
+                    this.startTime.get(Calendar.MONTH) + 1,
+                    this.startTime.get(Calendar.DAY_OF_MONTH),
+                    this.startTime.get(Calendar.HOUR_OF_DAY)),
+            this.room.roomName,
             this.notes);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Appointment appointment = (Appointment) o;
+
+    var isSameMonth =
+        appointment.startTime.get(Calendar.MONTH) == this.startTime.get(Calendar.MONTH);
+    var isSameDay =
+        appointment.startTime.get(Calendar.DAY_OF_MONTH)
+            == this.startTime.get(Calendar.DAY_OF_MONTH);
+    var isSameTime =
+        appointment.startTime.get(Calendar.HOUR_OF_DAY) == this.startTime.get(Calendar.HOUR_OF_DAY);
+    var isSameDate = isSameMonth && isSameDay && isSameTime;
+    var isSamePhysician = appointment.physician._id == this.physician._id;
+
+    return isSameDate && isSamePhysician;
   }
 
   /**

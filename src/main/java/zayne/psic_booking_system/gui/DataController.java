@@ -19,12 +19,22 @@ public class DataController {
   public TitledPane physicianPane;
   public TitledPane appointmentPane;
 
+  public static DataController controller;
+
   @FXML
   public void initialize() {
     // TODO: Observable Pattern
+    controller = this;
 
+    loadPhysicians();
+
+    loadPatients();
+
+    loadAppointments();
+  }
+
+  public void loadPhysicians() {
     physicianPane.setText("Physicians (%d physicians)".formatted(Physician.getPhysicians().size()));
-
     Physician.getPhysicians()
         .forEach(
             physician -> {
@@ -35,9 +45,25 @@ public class DataController {
               label.setText(physician.getStat());
               physicianList.getChildren().add(label);
             });
+  }
 
+  public void loadAppointments() {
+    appointmentPane.setText(
+        "Appointments (%d appointments)".formatted(Appointment.getAppointments().size()));
+    Appointment.getAppointments()
+        .forEach(
+            appointment -> {
+              var label = new Label();
+              // label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+              label.setTextAlignment(TextAlignment.LEFT);
+              label.setAlignment(Pos.CENTER_LEFT);
+              label.setText(appointment.getStat());
+              appointmentList.getChildren().add(label);
+            });
+  }
+
+  public void loadPatients() {
     patientPane.setText("Patients (%d patients)".formatted(Patient.getPatients().size()));
-
     Patient.getPatients()
         .forEach(
             patient -> {
@@ -48,18 +74,14 @@ public class DataController {
               label.setText(patient.getStat());
               patientList.getChildren().add(label);
             });
+  }
 
-    appointmentPane.setText(
-        "Appointments (%d appointments)".formatted(Appointment.getAppointments().size()));
-
-    Appointment.getAppointments()
-        .forEach(
-            appointment -> {
-              var label = new Label();
-              // label.setPrefWidth(Control.USE_COMPUTED_SIZE);
-              label.setTextAlignment(TextAlignment.LEFT);
-              label.setAlignment(Pos.CENTER_LEFT);
-              label.setText(appointment.getStat());
-            });
+  public void refreshData() {
+    this.physicianList.getChildren().clear();
+    loadPhysicians();
+    this.patientList.getChildren().clear();
+    loadPatients();
+    this.appointmentList.getChildren().clear();
+    loadAppointments();
   }
 }
