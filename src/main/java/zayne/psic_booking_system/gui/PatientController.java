@@ -224,6 +224,10 @@ public class PatientController {
 
   public void book() {
     var selected = listViewResult.getSelectionModel().getSelectedItem();
+    if (selected == null) {
+      labelErrMsg.setText("Select a slot to book!");
+      return;
+    }
     // `05-05 Wed 14:00  Betsy_Hopper	Room-A	Neural_Mobilisation`
     // regex to split a string by multiple consecutive spaces.
     var data = selected.split("\\s+");

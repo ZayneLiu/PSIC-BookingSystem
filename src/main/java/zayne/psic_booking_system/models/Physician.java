@@ -140,12 +140,8 @@ public class Physician extends Person {
 
     do {
 
-      if (Arrays.stream(this.workingDays)
-          .anyMatch((day) -> day == start.get(Calendar.DAY_OF_WEEK))) {
+      if (Arrays.stream(this.workingDays).anyMatch((day) -> day == start.get(Calendar.DAY_OF_WEEK)))
         resDays.add((Calendar) start.clone());
-        System.out.println(start.get(Calendar.DAY_OF_MONTH));
-
-      }
       start.add(Calendar.DAY_OF_MONTH, 1);
 
     } while (start.get(Calendar.MONTH) == Calendar.MAY);
