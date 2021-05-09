@@ -97,14 +97,13 @@ public class Appointment {
     getAppointmentsForPhysician(physician)
         .forEach(
             appointment -> {
-              if (appointment.startTime == calendar
+              var month = appointment.startTime.get(Calendar.MONTH);
+              var date = appointment.startTime.get(Calendar.DAY_OF_MONTH);
+              var time = appointment.startTime.get(Calendar.HOUR_OF_DAY);
+              if (month == calendar.get(Calendar.MONTH)
+                  && date == calendar.get(Calendar.DAY_OF_MONTH)
+                  && time == calendar.get(Calendar.HOUR_OF_DAY)
                   && appointment.state != Appointment_State.CANCELLED) {
-                // counter.addAndGet(1);
-                // if (counter.get() > 1) {
-                //     System.out.println(
-                //             "more than 1 appointment for a physician found booked for the same
-                // time");
-                // }
                 res.set(appointment);
               }
             });

@@ -208,7 +208,8 @@ public class PatientController {
       labelErrMsg.setText(
           physicians.size() == 0
               ? "No results found."
-              : "%d physician(s) found.".formatted(physicians.size()));
+              : "%d physicians %d slots."
+                  .formatted(physicians.size(), listViewResult.getItems().size()));
     } else if (expertise != null) {
       System.out.printf("Search by expertise %s - %s%n", expertise);
       // TODO： get target expertise's all slot and availability.
@@ -245,6 +246,7 @@ public class PatientController {
       labelErrMsg.setText("Appointment booked!");
       DataController.controller.refreshData();
       System.out.println(appointment.getStat());
+      search();
     }
   }
 
