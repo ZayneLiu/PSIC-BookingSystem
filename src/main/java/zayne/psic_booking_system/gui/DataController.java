@@ -23,7 +23,7 @@ public class DataController {
   public void initialize() {
     // TODO: Observable Pattern
 
-    physicianPane.setText("Physicians (%d physicians)".formatted(Patient.getPatients().size()));
+    physicianPane.setText("Physicians (%d physicians)".formatted(Physician.getPhysicians().size()));
 
     Physician.getPhysicians()
         .forEach(
