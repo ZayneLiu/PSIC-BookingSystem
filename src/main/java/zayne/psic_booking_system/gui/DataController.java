@@ -26,18 +26,15 @@ public class DataController {
     // TODO: Observable Pattern
     controller = this;
 
-    physicianPane.setText("Physicians (%d physicians)".formatted(Physician.getPhysicians().size()));
     loadPhysicians();
 
-    patientPane.setText("Patients (%d patients)".formatted(Patient.getPatients().size()));
     loadPatients();
 
-    appointmentPane.setText(
-        "Appointments (%d appointments)".formatted(Appointment.getAppointments().size()));
     loadAppointments();
   }
 
   public void loadPhysicians() {
+    physicianPane.setText("Physicians (%d physicians)".formatted(Physician.getPhysicians().size()));
     Physician.getPhysicians()
         .forEach(
             physician -> {
@@ -51,6 +48,8 @@ public class DataController {
   }
 
   public void loadAppointments() {
+    appointmentPane.setText(
+        "Appointments (%d appointments)".formatted(Appointment.getAppointments().size()));
     Appointment.getAppointments()
         .forEach(
             appointment -> {
@@ -64,6 +63,7 @@ public class DataController {
   }
 
   public void loadPatients() {
+    patientPane.setText("Patients (%d patients)".formatted(Patient.getPatients().size()));
     Patient.getPatients()
         .forEach(
             patient -> {
