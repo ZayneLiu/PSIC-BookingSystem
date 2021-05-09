@@ -113,7 +113,7 @@ public class Patient extends Person {
     this.address = address;
   }
 
-  public static Patient findPatient(String name) {
+  public static Patient getPatient(String name) {
     // DONE: find specific patient by name.
     Patient result = null;
     for (Patient patient : patients) {

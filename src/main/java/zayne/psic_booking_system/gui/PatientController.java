@@ -77,7 +77,7 @@ public class PatientController {
         .valueProperty()
         .addListener(
             (observable, oldV, newV) -> {
-              var patient = Patient.findPatient(newV);
+              var patient = Patient.getPatient(newV);
               labelAppointmentPatientID.setText(String.valueOf(patient._id));
             });
 
@@ -85,7 +85,7 @@ public class PatientController {
         .valueProperty()
         .addListener(
             (observable, oldValue, newValue) -> {
-              var patient = Patient.findPatient(newValue);
+              var patient = Patient.getPatient(newValue);
               labelPatientID.setText("Patient ID: " + patient._id);
             });
 
@@ -130,7 +130,7 @@ public class PatientController {
       return;
     }
 
-    var patient = Patient.findPatient(choiceBoxPatient.getValue());
+    var patient = Patient.getPatient(choiceBoxPatient.getValue());
     var keyword = textFieldKeyword.getText().trim();
     var expertise = choiceBoxExpertise.getValue();
 
@@ -221,7 +221,29 @@ public class PatientController {
     // if (searchBy)
   }
 
-  public void book() {}
+  public void book() {
+    var selected = listViewResult.getSelectionModel().getSelectedItem();
+    // `05-05 Wed 14:00  Betsy_Hopper	Room-A	Neural_Mobilisation`
+    // regex to split a string by multiple consecutive spaces.
+    var data = selected.split("\\s+");
+    var date = Calendar.getInstance();
+    date.set(
+        2021,
+        Integer.parseInt(data[0].split("-")[0]) - 1,
+        Integer.parseInt(data[0].split("-")[1]),
+        Integer.parseInt(data[2].split(":")[0]),
+        0);
+    var physician =
+        Physician.getPhysiciansByName(String.join(" ", data[3].split("_")).strip()).get(0);
+    var patient = Patient.getPatient(choiceBoxPatient.getValue().strip());
+    var treatment = Physician.Treatment.valueOf(data[5].toUpperCase());
+    // var room = Room.getRoom(data[4].split("-")[data[4].split("-").length - 1]);
+
+    var appointment = new Appointment(date, physician, patient, treatment).book();
+
+    DataController.controller.refreshData();
+    System.out.println(appointment.getStat());
+  }
 
   public void register() {
     labelPatientRegisterErrMsg.setText("");

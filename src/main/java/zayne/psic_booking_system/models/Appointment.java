@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Appointment {
 
   public static ArrayList<Appointment> appointments = new ArrayList<>();
-  public  static Appointment pendingAppointment = null;
   public long _id;
 
   public Appointment_Type type;
@@ -135,16 +134,19 @@ public class Appointment {
   }
 
   public String getStat() {
-    // TODO: potential display issue
-    return "ID:\t\t%s\nPatient:\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
+    // Done: potential display issue
+    return "ID:\t\t\t%s\nPatient:\t\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
         .formatted(
             this._id,
             this.patient.name,
             this.physician.name,
             this.treatment,
             this.state,
-            this.startTime,
-            this.room,
+            "%02d-%02d"
+                .formatted(
+                    this.startTime.get(Calendar.MONTH) + 1,
+                    this.startTime.get(Calendar.DAY_OF_MONTH)),
+            this.room.roomName,
             this.notes);
   }
 
