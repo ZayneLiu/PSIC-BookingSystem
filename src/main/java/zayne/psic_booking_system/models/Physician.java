@@ -43,8 +43,9 @@ public class Physician extends Person {
     return physicians;
   }
 
-  public ArrayList<String> getAvailableAppointments() {
-    var availableAppointments = new ArrayList<String>();
+  public ArrayList<Appointment> getAvailableAppointments() {
+    // var searchResult = new ArrayList<String>();
+    var availableAppointments = new ArrayList<Appointment>();
 
     var slots = new ArrayList<Calendar>();
     // Get all dates in the month the physician is working.
@@ -57,40 +58,17 @@ public class Physician extends Person {
           slots.addAll(Helper.getSlotsOnGivenDay(calendar));
         });
 
-    this.treatments.forEach(
-        treatment -> {
-          slots.forEach(
-              slot -> {
-                var resAppointment = Appointment.getAppointmentIfExists(slot, this);
+    slots.forEach(
+        slot -> {
+          this.treatments.forEach(
+              treatment -> {
+                var resAppointment = Appointment.getExistingAppointmentIfExists(slot, this);
                 if (resAppointment == null) {
                   // No appointment booked for this physician at this date and slot.
                   // Current slot is available.
-                  String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+                  var appointment = new Appointment(slot, this, null, treatment);
 
-                  var resMonth = slot.get(Calendar.MONTH) + 1;
-                  var resDay = slot.get(Calendar.DAY_OF_MONTH);
-                  var resDayOfWeek = days[slot.get(Calendar.DAY_OF_WEEK) - 1];
-                  var resHour = slot.get(Calendar.HOUR_OF_DAY);
-                  var resPhysicianName = String.join("_", this.name.split(" "));
-                  var resRoomName =
-                      this.room.roomName.length() == 1
-                          ? "Room-" + this.room.roomName
-                          : this.room.roomName;
-                  var resTreatment = treatment.toString();
-                  // Assemble resulting string.
-                  // "05-12 Wed 16:00 Some_Name Room-A Message"
-                  var res =
-                      "%02d-%02d %s %s:00  %s\t%s\t%s"
-                          .formatted(
-                              resMonth,
-                              resDay,
-                              resDayOfWeek,
-                              resHour,
-                              resPhysicianName,
-                              resRoomName,
-                              resTreatment);
-
-                  availableAppointments.add(res);
+                  availableAppointments.add(appointment);
                 }
               });
         });

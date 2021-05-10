@@ -53,6 +53,21 @@ public class Patient extends Person {
     return patients;
   }
 
+  public ArrayList<Appointment> getBookedAppointment() {
+    var booked = new ArrayList<Appointment>();
+    Appointment.getAppointments()
+        .forEach(
+            appointment -> {
+              // TODO: General appointments only, filter out consultations;
+              // appointment.type
+              if (appointment.patient == null) return;
+              if (appointment.patient._id == this._id) {
+                booked.add(appointment);
+              }
+            });
+    return booked;
+  }
+
   public Appointment bookAppointment(Calendar start, Physician physician, Treatment treatment) {
     var appointment = new Appointment(start, physician, this, treatment).book();
     return appointment;

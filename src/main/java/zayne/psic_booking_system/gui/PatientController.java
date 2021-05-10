@@ -6,12 +6,11 @@ import zayne.psic_booking_system.models.Appointment;
 import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class PatientController {
 
-  private static final String DEFAULT_EXPERTISE = "Enter Keyword";
-  private static final String DEFAULT_KEYWORD = "Select Expertise";
   public Label labelErrMsg;
   public Label labelPatientID;
   public Label labelPatientRegErrMsg;
@@ -86,6 +85,7 @@ public class PatientController {
             (observable, oldValue, newValue) -> {
               var patient = Patient.getPatient(newValue);
               labelPatientID.setText("Patient ID: " + patient._id);
+              search();
             });
 
     radioBtnIsVisitor
@@ -144,10 +144,37 @@ public class PatientController {
       var physicians = Physician.getPhysiciansByName(keyword.strip());
 
       for (Physician physician : physicians) {
+        // Availability Pipeline:::: Physician's side: Appointments for the same physician.
         var availableAppointments = physician.getAvailableAppointments();
-        // Add available appointment to search result view.
+        // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
+        var parallelAppointments = new ArrayList<Appointment>();
         availableAppointments.forEach(
-            appointment -> this.listViewResult.getItems().add(appointment));
+            appointment -> {
+              patient
+                  .getBookedAppointment()
+                  .forEach(
+                      patientAppointment -> {
+                        var isSameMonth =
+                            appointment.startTime.get(Calendar.MONTH)
+                                == patientAppointment.startTime.get(Calendar.MONTH);
+                        var isSameDay =
+                            appointment.startTime.get(Calendar.DAY_OF_MONTH)
+                                == patientAppointment.startTime.get(Calendar.DAY_OF_MONTH);
+                        var isSameTime =
+                            appointment.startTime.get(Calendar.HOUR_OF_DAY)
+                                == patientAppointment.startTime.get(Calendar.HOUR_OF_DAY);
+
+                        var isSameDate = isSameMonth && isSameDay && isSameTime;
+
+                        if (isSameDate && !patientAppointment.isCancelled()) {
+
+                          parallelAppointments.add(appointment);
+                        }
+                      });
+            });
+        availableAppointments.removeAll(parallelAppointments);
+        // Add available appointment to search result view.
+        loadSearchResult(availableAppointments);
       }
       var searchResult =
           physicians.size() == 0
@@ -164,10 +191,37 @@ public class PatientController {
 
       physiciansWithTargetExpertise.forEach(
           physician -> {
+            // Availability Pipeline:::: Physician's side: Appointments for the same physician.
             var availableAppointments = physician.getAvailableAppointments();
-            // Add available appointment to search result view.
+            // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
+            var parallelAppointments = new ArrayList<Appointment>();
             availableAppointments.forEach(
-                appointment -> this.listViewResult.getItems().add(appointment));
+                appointment -> {
+                  patient
+                      .getBookedAppointment()
+                      .forEach(
+                          patientAppointment -> {
+                            var isSameMonth =
+                                appointment.startTime.get(Calendar.MONTH)
+                                    == patientAppointment.startTime.get(Calendar.MONTH);
+                            var isSameDay =
+                                appointment.startTime.get(Calendar.DAY_OF_MONTH)
+                                    == patientAppointment.startTime.get(Calendar.DAY_OF_MONTH);
+                            var isSameTime =
+                                appointment.startTime.get(Calendar.HOUR_OF_DAY)
+                                    == patientAppointment.startTime.get(Calendar.HOUR_OF_DAY);
+
+                            var isSameDate = isSameMonth && isSameDay && isSameTime;
+
+                            if (isSameDate && !patientAppointment.isCancelled()) {
+
+                              parallelAppointments.add(appointment);
+                            }
+                          });
+                });
+            availableAppointments.removeAll(parallelAppointments);
+            // Add available appointment to search result view.
+            loadSearchResult(availableAppointments);
           });
 
       var searchResult =
@@ -240,5 +294,38 @@ public class PatientController {
       DataController.controller.refreshData();
     }
     btnPatientRegistration.setDisable(false);
+  }
+
+  private void loadSearchResult(ArrayList<Appointment> appointments) {
+
+    appointments.forEach(
+        appointment -> {
+          String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
+          var resMonth = appointment.startTime.get(Calendar.MONTH) + 1;
+          var resDay = appointment.startTime.get(Calendar.DAY_OF_MONTH);
+          var resDayOfWeek = days[appointment.startTime.get(Calendar.DAY_OF_WEEK) - 1];
+          var resHour = appointment.startTime.get(Calendar.HOUR_OF_DAY);
+          var resPhysicianName = String.join("_", appointment.physician.name.split(" "));
+          var resRoomName =
+              appointment.room.roomName.length() == 1
+                  ? "Room-" + appointment.room.roomName
+                  : appointment.room.roomName;
+          var resTreatment = appointment.treatment.toString();
+          // Assemble resulting string.
+          // "05-12 Wed 16:00 Some_Name Room-A Message"
+          var res =
+              "%02d-%02d %s %s:00  %s\t%s\t%s"
+                  .formatted(
+                      resMonth,
+                      resDay,
+                      resDayOfWeek,
+                      resHour,
+                      resPhysicianName,
+                      resRoomName,
+                      resTreatment);
+
+          listViewResult.getItems().add(res);
+        });
   }
 }

@@ -65,9 +65,6 @@ public class Appointment {
   public Appointment(Calendar start, Physician physician, Patient patient, Treatment treatment) {
     this._id = Calendar.getInstance().getTimeInMillis();
     this.startTime = start;
-    // this.endTime = (Calendar) start.clone();
-    // this.endTime.add(Calendar.HOUR_OF_DAY, 2);
-    // TODO: Physician available
     this.physician = physician;
     this.patient = patient;
     this.treatment = treatment;
@@ -93,7 +90,7 @@ public class Appointment {
     return result;
   }
 
-  public static Appointment getAppointmentIfExists(Calendar calendar, Physician physician) {
+  public static Appointment getExistingAppointmentIfExists(Calendar calendar, Physician physician) {
     AtomicReference<Appointment> res = new AtomicReference<>();
     res.set(null);
 
@@ -123,13 +120,33 @@ public class Appointment {
           var isCanceled = appointment.state == Appointment_State.CANCELLED;
           if (isCanceled) return;
 
-          if (appointment.equals(this)) isValid.set(false);
+          if (appointment.hasConflict(this)) isValid.set(false);
         });
 
     if (isValid.get()) appointments.add(this);
     else return null;
 
     return this;
+  }
+
+  public boolean isCancelled() {
+    return this.state == Appointment.Appointment_State.CANCELLED;
+  }
+
+  private boolean hasConflict(Appointment appointment) {
+    var isSameMonth =
+        appointment.startTime.get(Calendar.MONTH) == this.startTime.get(Calendar.MONTH);
+    var isSameDay =
+        appointment.startTime.get(Calendar.DAY_OF_MONTH)
+            == this.startTime.get(Calendar.DAY_OF_MONTH);
+    var isSameTime =
+        appointment.startTime.get(Calendar.HOUR_OF_DAY) == this.startTime.get(Calendar.HOUR_OF_DAY);
+
+    var isSameDate = isSameMonth && isSameDay && isSameTime;
+    var isSamePhysician = appointment.physician._id == this.physician._id;
+    // var isSamePatient =
+
+    return isSameDate && isSamePhysician;
   }
 
   public Appointment miss() {
@@ -164,26 +181,6 @@ public class Appointment {
                     this.startTime.get(Calendar.HOUR_OF_DAY)),
             this.room.roomName,
             this.notes);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    Appointment appointment = (Appointment) o;
-
-    var isSameMonth =
-        appointment.startTime.get(Calendar.MONTH) == this.startTime.get(Calendar.MONTH);
-    var isSameDay =
-        appointment.startTime.get(Calendar.DAY_OF_MONTH)
-            == this.startTime.get(Calendar.DAY_OF_MONTH);
-    var isSameTime =
-        appointment.startTime.get(Calendar.HOUR_OF_DAY) == this.startTime.get(Calendar.HOUR_OF_DAY);
-    var isSameDate = isSameMonth && isSameDay && isSameTime;
-    var isSamePhysician = appointment.physician._id == this.physician._id;
-
-    return isSameDate && isSamePhysician;
   }
 
   /**

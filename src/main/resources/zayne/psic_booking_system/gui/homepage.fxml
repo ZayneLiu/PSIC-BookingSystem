@@ -5,9 +5,9 @@
 <VBox fx:id="vBoxMain"  prefWidth="640.0" xmlns="http://javafx.com/javafx/16"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="zayne.psic_booking_system.gui.HomePageController">
     <TabPane prefWidth="640.0" tabClosingPolicy="UNAVAILABLE">
-        <Tab text="Physician Subsystem">
-            <VBox fx:id="vBoxPhysician"/>
-        </Tab>
+<!--        <Tab text="Physician Subsystem">-->
+<!--            <VBox fx:id="vBoxPhysician"/>-->
+<!--        </Tab>-->
         <Tab text="Patient Subsystem">
             <VBox fx:id="vBoxPatient"/>
         </Tab>
