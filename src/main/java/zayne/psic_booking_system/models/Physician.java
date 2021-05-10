@@ -123,6 +123,7 @@ public class Physician extends Person {
    */
   public static ArrayList<Physician> getPhysiciansByExpertise(String expertise) {
     var result = new ArrayList<Physician>();
+
     var expertiseInNeed = Expertise.valueOf(expertise.toUpperCase());
     // Retrieve all physicians with the provided expertise.
     for (Physician physician : physicians) {
@@ -130,6 +131,7 @@ public class Physician extends Person {
         result.add(physician);
       }
     }
+
     return result;
   }
 

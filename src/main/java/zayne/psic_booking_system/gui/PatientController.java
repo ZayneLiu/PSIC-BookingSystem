@@ -121,6 +121,7 @@ public class PatientController {
 
   public void search() {
     labelErrMsg.setText("");
+    // Clear the result listview for new search.
     listViewResult.getItems().clear();
     var searchByName = choiceBoxSearchBy.getValue().equals("Name");
 
@@ -130,26 +131,23 @@ public class PatientController {
     }
 
     var patient = Patient.getPatient(choiceBoxPatient.getValue());
-    var keyword = textFieldKeyword.getText().trim();
-    var expertise = choiceBoxExpertise.getValue();
+    var keyword = textFieldKeyword.getText().strip();
+    var expertise =
+        choiceBoxExpertise.getValue() == null ? null : choiceBoxExpertise.getValue().strip();
 
     if (searchByName) {
       if (keyword.equals("")) {
-        labelErrMsg.setText("Please Enter Search Keyword!");
+        labelErrMsg.setText("Enter Search Keyword!");
         return;
       }
-
+      // Done： get target physician's all slot and availability
       var physicians = Physician.getPhysiciansByName(keyword.strip());
 
-      // Done： get target physician's all slot and availability
       for (Physician physician : physicians) {
-
         var availableAppointments = physician.getAvailableAppointments();
-
         // Add available appointment to search result view.
-        for (String appointment : availableAppointments) {
-          this.listViewResult.getItems().add(appointment);
-        }
+        availableAppointments.forEach(
+            appointment -> this.listViewResult.getItems().add(appointment));
       }
       var searchResult =
           physicians.size() == 0
@@ -160,9 +158,25 @@ public class PatientController {
       labelErrMsg.setText(searchResult);
 
     } else if (expertise != null) {
-      System.out.printf("Search by expertise %s - %s%n", expertise);
-      // TODO： get target expertise's all slot and availability.
-      // TODO: expertise -> treatments mapping
+      // System.out.printf("Search by expertise %s - %s%n", expertise);
+
+      var physiciansWithTargetExpertise = Physician.getPhysiciansByExpertise(expertise);
+
+      physiciansWithTargetExpertise.forEach(
+          physician -> {
+            var availableAppointments = physician.getAvailableAppointments();
+            // Add available appointment to search result view.
+            availableAppointments.forEach(
+                appointment -> this.listViewResult.getItems().add(appointment));
+          });
+
+      var searchResult =
+          physiciansWithTargetExpertise.size() == 0
+              ? "No results found."
+              : "%d physicians %d slots."
+                  .formatted(
+                      physiciansWithTargetExpertise.size(), listViewResult.getItems().size());
+      labelErrMsg.setText(searchResult);
 
     } else {
       labelErrMsg.setText("Fill in all fields!!");
