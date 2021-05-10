@@ -15,7 +15,7 @@ public class PatientController {
   private static final String DEFAULT_KEYWORD = "Select Expertise";
   public Label labelErrMsg;
   public Label labelPatientID;
-  public Label labelPatientRegisterErrMsg;
+  public Label labelPatientRegErrMsg;
   public Label labelAppointment;
   public Label labelAppointmentPatientID;
   public ListView<String> listViewResult;
@@ -255,13 +255,14 @@ public class PatientController {
   }
 
   public void register() {
-    labelPatientRegisterErrMsg.setText("");
+    btnPatientRegistration.setDisable(true);
+    labelPatientRegErrMsg.setText("");
     var name = textPatientRegisterName.getText().trim();
     var tel = textPatientRegisterTel.getText().trim();
     var addr = textPatientRegisterAddr.getText().trim();
 
     if (name.equals("") || tel.equals("") || addr.equals("")) {
-      labelPatientRegisterErrMsg.setText("Please fill in all fields.");
+      labelPatientRegErrMsg.setText("Please fill in all fields.");
       return;
     }
 
@@ -271,8 +272,10 @@ public class PatientController {
       textPatientRegisterTel.setText("");
       textPatientRegisterAddr.setText("");
 
-      labelPatientRegisterErrMsg.setText("Successfully registered.");
+      labelPatientRegErrMsg.setText("Successfully registered.");
       refreshPatientData();
+      DataController.controller.refreshData();
     }
+    btnPatientRegistration.setDisable(false);
   }
 }

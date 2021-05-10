@@ -69,7 +69,7 @@
                     <Label alignment="CENTER" text="Addr.:"/>
                     <TextField fx:id="textPatientRegisterAddr" prefHeight="25.0" prefWidth="140.0"/>
                 </HBox>
-                <Label fx:id="labelPatientRegisterErrMsg" alignment="CENTER"/>
+                <Label fx:id="labelPatientRegErrMsg" alignment="CENTER"/>
                 <Button fx:id="btnPatientRegistration" alignment="CENTER" mnemonicParsing="false" text="Button"/>
             </VBox>
         </TitledPane>

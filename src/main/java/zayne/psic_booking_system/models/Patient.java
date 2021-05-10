@@ -4,6 +4,7 @@ import zayne.psic_booking_system.models.Physician.Treatment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Patient extends Person {
   // Visitor account
@@ -36,17 +37,14 @@ public class Patient extends Person {
    * @return whether it is successful.
    */
   public static boolean registerPatient(Patient patient) {
-    var ref =
-        new Object() {
-          boolean duplicated = false;
-        };
+    var duplicated = new AtomicBoolean(false);
 
     patients.forEach(
         p -> {
-          if (p._id == patient._id) ref.duplicated = true;
+          if (p._id == patient._id) duplicated.set(true);
         });
 
-    if (ref.duplicated) return false;
+    if (duplicated.get()) return false;
     patients.add(patient);
     return true;
   }
