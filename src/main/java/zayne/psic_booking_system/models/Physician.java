@@ -1,5 +1,7 @@
 package zayne.psic_booking_system.models;
 
+import zayne.psic_booking_system.utils.Helper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -12,15 +14,13 @@ import java.util.Calendar;
 public class Physician extends Person {
   /** In-memory storage of physicians data. */
   private static final ArrayList<Physician> physicians = new ArrayList<>();
-  // Working hrs is `10:00 - 18:00`, `Mon - Fri`.
-  public static int WORKING_HRS_START = 10;
-  public static int WORKING_HRS_END = 18;
+
   public ArrayList<Expertise> expertise = new ArrayList<>();
-  public ArrayList<Treatment> treatment = new ArrayList<>();
+  public ArrayList<Treatment> treatments = new ArrayList<>();
   public Integer[] workingDays = new Integer[2];
   /** Consultation hours is 2hrs each week. so only start time will be stored. */
   public Integer[] consultHours = new Integer[2];
-
+  /** This physicians' room */
   public Room room;
 
   public Physician() {}
@@ -42,50 +42,59 @@ public class Physician extends Person {
     return physicians;
   }
 
-  public static ArrayList<Physician> getAvailablePhysicians(Calendar start, Treatment treatment) {
-    // Get appointments booked for the given `date`, `time` and `treatment`.
-    var filteredAppointments = new ArrayList<Appointment>();
-    Appointment.appointments.forEach(
-        appointment -> {
-          var startTime = appointment.startTime;
-          var date = startTime.get(Calendar.DATE);
-          var time = startTime.get(Calendar.HOUR_OF_DAY);
-          var physician = appointment.physician;
+  public ArrayList<String> getAvailableAppointments() {
+    var availableAppointments = new ArrayList<String>();
 
-          if (date == start.get(Calendar.DATE)
-              && time == start.get(Calendar.HOUR_OF_DAY)
-              && appointment.treatment == treatment) {
-            filteredAppointments.add(appointment);
-          }
+    var slots = new ArrayList<Calendar>();
+    // Get all dates in the month the physician is working.
+    // e.g. [Tue, Fri] -> [May-4, May-7, May-11, May-14, May-18, May-21, May-25, May-28]
+    var workingDays = this.getWorkingDates();
+    workingDays.forEach(
+        calendar -> {
+          // Get 4 slots on given day.
+          // `May-4` -> [May-4-10:00, May-4-12:00, May-4-14:00, May-4-16:00]
+          slots.addAll(Helper.getSlotsOnGivenDay(calendar));
         });
 
-    // Remove booked physician from the list of physicians who provide this treatment.
-    var filteredPhysicianByAppointment = getPhysiciansByTreatment(treatment);
-    filteredAppointments.forEach(
-        appointment -> {
-          filteredPhysicianByAppointment.remove(appointment.physician);
+    this.treatments.forEach(
+        treatment -> {
+          slots.forEach(
+              slot -> {
+                var resAppointment = Appointment.getAppointmentIfExists(slot, this);
+                if (resAppointment == null) {
+                  // No appointment booked for this physician at this date and slot.
+                  // Current slot is available.
+                  String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
+                  var resMonth = slot.get(Calendar.MONTH) + 1;
+                  var resDay = slot.get(Calendar.DAY_OF_MONTH);
+                  var resDayOfWeek = days[slot.get(Calendar.DAY_OF_WEEK) - 1];
+                  var resHour = slot.get(Calendar.HOUR_OF_DAY);
+                  var resPhysicianName = String.join("_", this.name.split(" "));
+                  var resRoomName =
+                      this.room.roomName.length() == 1
+                          ? "Room-" + this.room.roomName
+                          : this.room.roomName;
+                  var resTreatment = treatment.toString();
+                  // Assemble resulting string.
+                  // "05-12 Wed 16:00 Some_Name Room-A Message"
+                  var res =
+                      "%02d-%02d %s %s:00  %s\t%s\t%s"
+                          .formatted(
+                              resMonth,
+                              resDay,
+                              resDayOfWeek,
+                              resHour,
+                              resPhysicianName,
+                              resRoomName,
+                              resTreatment);
+
+                  availableAppointments.add(res);
+                }
+              });
         });
 
-    // Each physician only works 2 days per week,
-    // only add the physician that are available that day to the result.
-    var filteredPhysicianByWorkdays = new ArrayList<Physician>();
-    filteredPhysicianByAppointment.forEach(
-        physician -> {
-          var day = start.get(Calendar.DAY_OF_WEEK);
-          if (Arrays.stream(physician.workingDays).anyMatch(d -> d == day))
-            filteredPhysicianByWorkdays.add(physician);
-        });
-
-    // TODO: filter out consultation hrs
-    var res = new ArrayList<Physician>();
-    filteredPhysicianByWorkdays.forEach(
-        physician -> {
-          var day = start.get(Calendar.DAY_OF_WEEK);
-          var time = start.get(Calendar.HOUR_OF_DAY);
-          // FIXME: potential issue as consultations are 30 mins each.
-          if (physician.consultHours[1] != time) res.add(physician);
-        });
-    return res;
+    return availableAppointments;
   }
 
   /**
@@ -128,7 +137,7 @@ public class Physician extends Person {
     var res = new ArrayList<Physician>();
     physicians.forEach(
         physician -> {
-          if (physician.treatment.contains(treatment)) res.add(physician);
+          if (physician.treatments.contains(treatment)) res.add(physician);
         });
     return res;
   }
@@ -152,8 +161,8 @@ public class Physician extends Person {
     return resDays;
   }
 
-  public ArrayList<Appointment> getAppointments() {
-    return Appointment.getAppointmentsForPhysician(this);
+  public ArrayList<Appointment> getBookedAppointments() {
+    return Appointment.getBookedAppointmentsForPhysician(this);
   }
 
   public String getStat() {

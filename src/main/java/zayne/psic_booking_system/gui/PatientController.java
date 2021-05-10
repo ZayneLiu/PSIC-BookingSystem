@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import zayne.psic_booking_system.models.Appointment;
 import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
-import zayne.psic_booking_system.utils.Helper;
 
 import java.util.Calendar;
 
@@ -139,76 +138,27 @@ public class PatientController {
         labelErrMsg.setText("Please Enter Search Keyword!");
         return;
       }
-      System.out.printf("Search by name %s - %s\n", keyword, patient);
 
       var physicians = Physician.getPhysiciansByName(keyword.strip());
-      System.out.printf("Physicians: %s\n", physicians);
 
       // Done： get target physician's all slot and availability
-      physicians.forEach(
-          physician -> {
-            // Get all dates which the physician is working,
-            // based on the `workingDays` of the physician.
-            // e.g. `[Tue, Fri]` -> `[May-4, May-7, May-11, May-14, May-18, May-21, May-25, May-28]`
-            var workingDays = physician.getWorkingDates();
-            System.out.printf("Workdays: %s\n", workingDays.size());
-            workingDays.forEach(
-                day -> {
-                  // System.out.println(day.get(Calendar.DAY_OF_MONTH));
-                });
+      for (Physician physician : physicians) {
 
-            workingDays.forEach(
-                calendar -> {
-                  // var appointments = new ArrayList<Appointment>();
-                  // Get 4 slots on given day.
-                  // e.g. `May-4` -> `[May-4-10:00, May-4-12:00, May-4-14:00, May-4-16:00]`
-                  var slots = Helper.getSlots(calendar);
-                  // System.out.println(slots.size());
+        var availableAppointments = physician.getAvailableAppointments();
 
-                  physician.treatment.forEach(
-                      treatment -> {
-                        slots.forEach(
-                            slot -> {
-                              var resAppointment = Appointment.getAppointment(slot, physician);
-                              // System.out.println(resAppointment);
-                              // if (physician.consultHours[0] == slot.get(Calendar.DAY_OF_WEEK)
-                              //     && physician.consultHours[1] == slot.get(Calendar.HOUR_OF_DAY))
-                              if (resAppointment == null) {
-                                // var map =
-                                //     calendar.getDisplayNames(
-                                //         Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.ENGLISH);
-                                String[] days =
-                                    new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-
-                                var res = new StringBuilder();
-                                res.append("%02d".formatted(calendar.get(Calendar.MONTH) + 1))
-                                    .append("-")
-                                    .append("%02d ".formatted(calendar.get(Calendar.DAY_OF_MONTH)))
-                                    .append(days[calendar.get(Calendar.DAY_OF_WEEK) - 1])
-                                    .append(" ")
-                                    .append(slot.get(Calendar.HOUR_OF_DAY))
-                                    .append(":00  ")
-                                    .append(String.join("_", physician.name.split(" ")))
-                                    .append("\t");
-
-                                if (physician.room.roomName.length() == 1) res.append("Room-");
-
-                                res.append(physician.room.roomName)
-                                    .append("\t")
-                                    .append(treatment.toString());
-
-                                // System.out.println(res);
-                                this.listViewResult.getItems().add(res.toString());
-                              }
-                            });
-                      });
-                });
-          });
-
-      labelErrMsg.setText(
+        // Add available appointment to search result view.
+        for (String appointment : availableAppointments) {
+          this.listViewResult.getItems().add(appointment);
+        }
+      }
+      var searchResult =
           physicians.size() == 0
               ? "No results found."
-              : "%d physician(s) found.".formatted(physicians.size()));
+              : "%d physicians %d slots."
+                  .formatted(physicians.size(), listViewResult.getItems().size());
+
+      labelErrMsg.setText(searchResult);
+
     } else if (expertise != null) {
       System.out.printf("Search by expertise %s - %s%n", expertise);
       // TODO： get target expertise's all slot and availability.

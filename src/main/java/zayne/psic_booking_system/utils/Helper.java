@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Helper {
-  public static ArrayList<Calendar> getSlots(Calendar date) {
+  public static ArrayList<Calendar> getSlotsOnGivenDay(Calendar date) {
     var slots = new ArrayList<Calendar>();
 
     var month = date.get(Calendar.MONTH);

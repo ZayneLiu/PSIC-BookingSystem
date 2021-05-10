@@ -19,8 +19,8 @@ public class DataLoader {
     physician1.tel = "+4407866442335";
     physician1.address = "511 Hawthorne Street, Duryea, New Hampshire, 5065";
     physician1.expertise.add(Physician.Expertise.OSTEOPATHY);
-    physician1.treatment.add(Physician.Treatment.SPINE_JOINTS_MOBILISATION);
-    physician1.treatment.add(Physician.Treatment.NEURAL_MOBILISATION);
+    physician1.treatments.add(Physician.Treatment.SPINE_JOINTS_MOBILISATION);
+    physician1.treatments.add(Physician.Treatment.NEURAL_MOBILISATION);
     physician1.room = Room.getRoom("A");
     physician1.workingDays[0] = Calendar.FRIDAY;
     physician1.workingDays[1] = Calendar.WEDNESDAY;
@@ -32,8 +32,8 @@ public class DataLoader {
     physician2.tel = "+4407845585328";
     physician2.address = "696 Coleman Street, Ahwahnee, Guam, 1622";
     physician2.expertise.add(Physician.Expertise.PHYSIOTHERAPY);
-    physician2.treatment.add(Physician.Treatment.ACUPUNCTURE);
-    physician2.treatment.add(Physician.Treatment.MASSAGE);
+    physician2.treatments.add(Physician.Treatment.ACUPUNCTURE);
+    physician2.treatments.add(Physician.Treatment.MASSAGE);
     physician2.room = Room.getRoom("B");
     // physician2.expertise.add(Physician.Expertise.REHABILITATION);
     // physician2.treatment.add(Physician.Treatment.GYM_REHABILITATION);
@@ -48,8 +48,8 @@ public class DataLoader {
     physician3.tel = "+4407882552388";
     physician3.address = "800 Bowne Street, Haring, Hawaii, 523";
     physician3.expertise.add(Physician.Expertise.PHYSIOTHERAPY);
-    physician3.treatment.add(Physician.Treatment.MASSAGE);
-    physician3.treatment.add(Physician.Treatment.ACUPUNCTURE);
+    physician3.treatments.add(Physician.Treatment.MASSAGE);
+    physician3.treatments.add(Physician.Treatment.ACUPUNCTURE);
     physician3.room = Room.getRoom("C");
     // physician3.expertise.add(Physician.Expertise.REHABILITATION);
     // physician3.treatment.add(Physician.Treatment.GYM_REHABILITATION);
@@ -64,7 +64,7 @@ public class DataLoader {
     physician4.tel = "+4407952458363";
     physician4.address = "426 Jackson Court, Vandiver, Montana, 2163";
     physician4.expertise.add(Physician.Expertise.REHABILITATION);
-    physician4.treatment.add(Physician.Treatment.POOL_REHABILITATION);
+    physician4.treatments.add(Physician.Treatment.POOL_REHABILITATION);
     physician4.room = Room.getRoom("Pool");
     // physician4.treatment.add(Physician.Treatment.GYM_REHABILITATION);
     physician4.workingDays[0] = Calendar.THURSDAY;
@@ -77,7 +77,7 @@ public class DataLoader {
     physician5.tel = "+4407928560227";
     physician5.address = "279 Evergreen Avenue, Ventress, Rhode Island, 2918";
     physician5.expertise.add(Physician.Expertise.REHABILITATION);
-    physician5.treatment.add(Physician.Treatment.GYM_REHABILITATION);
+    physician5.treatments.add(Physician.Treatment.GYM_REHABILITATION);
     physician5.room = Room.getRoom("Gym");
     // physician5.treatment.add(Physician.Treatment.POOL_REHABILITATION);
     physician5.workingDays[0] = Calendar.WEDNESDAY;
