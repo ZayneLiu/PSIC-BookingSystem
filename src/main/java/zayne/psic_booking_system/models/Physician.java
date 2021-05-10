@@ -5,6 +5,7 @@ import zayne.psic_booking_system.utils.Helper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Working hours: 10:00 - 17:00 <br>
@@ -164,16 +165,39 @@ public class Physician extends Person {
   }
 
   public String getStat() {
-    var res = "Name:\t%s\nID:\t\t%s\nTel:\t\t%s\n".formatted(this.name, this._id, this.tel);
-
     String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
-    res +=
-        "Work:\t%s, %s\n".formatted(days[this.workingDays[0] - 1], days[this.workingDays[1] - 1]);
+    var resName = this.name;
+    var resId = this._id;
+    var resTel = this.tel;
+    var resWorkingDays = new String[2];
+    var resConsultDay = days[this.consultHours[0] - 1];
+    var resConsultHour = this.consultHours[1];
+    var resExpertise = new AtomicReference<>("");
+    var resTreatments = new AtomicReference<>("");
 
-    res += "Consult:\t%s - %s:00".formatted(days[this.consultHours[0] - 1], this.consultHours[1]);
+    resWorkingDays[0] = days[this.workingDays[0] - 1];
+    resWorkingDays[1] = days[this.workingDays[1] - 1];
+    this.expertise.forEach(
+        exp -> {
+          resExpertise.set(resExpertise.get() + exp.name + " ");
+        });
+    this.treatments.forEach(
+        treat -> {
+          resTreatments.set(resTreatments.get() + "\t\t" + treat.name + "\n");
+        });
 
-    return res;
+    var res = new StringBuilder();
+
+    res.append("Name:\t%s\n".formatted(resName));
+    res.append("ID:\t\t%s\n".formatted(resId));
+    res.append("Work:\t%s, %s\n".formatted(resWorkingDays[0], resWorkingDays[1]));
+    res.append("Consult:\t%s - %s:00\n".formatted(resConsultDay, resConsultHour));
+    res.append("Tel:\t\t%s\n".formatted(resTel));
+    res.append("Expertise:\n\t\t%s\n".formatted(resExpertise.get()));
+    res.append("Treatments:\n%s".formatted(resTreatments.get()));
+
+    return res.toString();
   }
 
   public String toString() {

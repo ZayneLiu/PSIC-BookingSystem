@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -44,6 +45,7 @@ public class DataController {
               label.setAlignment(Pos.CENTER_LEFT);
               label.setText(physician.getStat());
               physicianList.getChildren().add(label);
+              physicianList.getChildren().add(new Separator());
             });
   }
 
@@ -59,6 +61,7 @@ public class DataController {
               label.setAlignment(Pos.CENTER_LEFT);
               label.setText(appointment.getStat());
               appointmentList.getChildren().add(label);
+              appointmentList.getChildren().add(new Separator());
             });
   }
 
@@ -73,6 +76,7 @@ public class DataController {
               label.setAlignment(Pos.CENTER_LEFT);
               label.setText(patient.getStat());
               patientList.getChildren().add(label);
+              patientList.getChildren().add(new Separator());
             });
   }
 
