@@ -82,31 +82,35 @@ public class Appointment {
     return appointments;
   }
 
-  public static ArrayList<Appointment> getAppointmentsForPhysician(Physician physician) {
+  public static ArrayList<Appointment> getBookedAppointmentsForPhysician(Physician physician) {
     var result = new ArrayList<Appointment>();
-    for (var appointment : appointments) {
-      if (appointment.physician._id == physician._id) result.add(appointment);
-    }
+
+    appointments.forEach(
+        appointment -> {
+          if (appointment.physician._id == physician._id) result.add(appointment);
+        });
+
     return result;
   }
 
-  public static Appointment getAppointment(Calendar calendar, Physician physician) {
+  public static Appointment getAppointmentIfExists(Calendar calendar, Physician physician) {
     AtomicReference<Appointment> res = new AtomicReference<>();
     res.set(null);
-    // AtomicInteger counter = new AtomicInteger();
-    getAppointmentsForPhysician(physician)
-        .forEach(
-            appointment -> {
-              var month = appointment.startTime.get(Calendar.MONTH);
-              var date = appointment.startTime.get(Calendar.DAY_OF_MONTH);
-              var time = appointment.startTime.get(Calendar.HOUR_OF_DAY);
-              if (month == calendar.get(Calendar.MONTH)
-                  && date == calendar.get(Calendar.DAY_OF_MONTH)
-                  && time == calendar.get(Calendar.HOUR_OF_DAY)
-                  && appointment.state != Appointment_State.CANCELLED) {
-                res.set(appointment);
-              }
-            });
+
+    var bookedAppointments = physician.getBookedAppointments();
+    bookedAppointments.forEach(
+        appointment -> {
+          var month = appointment.startTime.get(Calendar.MONTH);
+          var date = appointment.startTime.get(Calendar.DAY_OF_MONTH);
+          var time = appointment.startTime.get(Calendar.HOUR_OF_DAY);
+          if (month == calendar.get(Calendar.MONTH)
+              && date == calendar.get(Calendar.DAY_OF_MONTH)
+              && time == calendar.get(Calendar.HOUR_OF_DAY)
+              && appointment.state != Appointment_State.CANCELLED) {
+            res.set(appointment);
+          }
+        });
+
     return res.get();
   }
 
