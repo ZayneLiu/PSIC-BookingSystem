@@ -14,7 +14,7 @@ public class PatientController {
   public Label labelErrMsg;
   public Label labelPatientID;
   public Label labelPatientRegErrMsg;
-  public Label labelAppointment;
+  public Label labelAppointmentStatus;
   public Label labelAppointmentPatientID;
   public ListView<String> listViewResult;
   public TextField textPatientRegisterTel;
@@ -37,6 +37,8 @@ public class PatientController {
   public Button btnCancelAppointment;
   // public DatePicker datePickerPatient;
 
+  public ArrayList<Appointment> appointmentsForSpecificPatient = new ArrayList<>();
+
   /* method `initialize()` is called after the constructor. */
   @FXML
   public void initialize() {
@@ -46,6 +48,9 @@ public class PatientController {
 
     choiceBoxExpertise.setDisable(true);
     radioBtnIsPatient.setSelected(true);
+    btnMissAppointment.setDisable(true);
+    btnAttendAppointment.setDisable(true);
+    btnCancelAppointment.setDisable(true);
 
     setupPropertyBindings();
     setupEventListeners();
@@ -77,7 +82,23 @@ public class PatientController {
             (observable, oldV, newV) -> {
               var patient = Patient.getPatient(newV);
               labelAppointmentPatientID.setText(String.valueOf(patient._id));
+              loadAppointmentsForPatient(patient);
             });
+
+    choiceBoxAppointment
+        .valueProperty()
+        .addListener(
+            ((observable, oldValue, newValue) -> {
+              var appointment = Appointment.getAppointmentById(newValue.split("#")[1]);
+              labelAppointmentStatus.setText(appointment.state.toString());
+              if (!appointment.isCancelled()
+                  || !appointment.isMissed()
+                  || !appointment.isAttended()) {
+                btnMissAppointment.setDisable(false);
+                btnAttendAppointment.setDisable(false);
+                btnCancelAppointment.setDisable(false);
+              }
+            }));
 
     choiceBoxPatient
         .valueProperty()
@@ -98,6 +119,20 @@ public class PatientController {
     btnSearch.setOnMouseClicked(mouseEvent -> search());
     btnBookAppointment.setOnMouseClicked(mouseEvent -> book());
     btnPatientRegistration.setOnMouseClicked(event -> register());
+    btnAttendAppointment.setOnMouseClicked(event -> attendAnAppointment());
+    btnMissAppointment.setOnMouseClicked(event -> missAnAppointment());
+    btnCancelAppointment.setOnMouseClicked(event -> cancelAnAppointment());
+  }
+
+  private void loadAppointmentsForPatient(Patient patient) {
+    appointmentsForSpecificPatient.clear();
+    patient
+        .getBookedAppointment()
+        .forEach(
+            appointment -> {
+              appointmentsForSpecificPatient.add(appointment);
+              this.choiceBoxAppointment.getItems().add(appointment.toString());
+            });
   }
 
   private void setupPropertyBindings() {
@@ -109,7 +144,7 @@ public class PatientController {
     labelPatientID.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
   }
 
-  public void refreshPatientData() {
+  private void refreshPatientData() {
     choiceBoxPatient.getItems().clear();
     choiceBoxPatientAppointment.getItems().clear();
 
@@ -117,6 +152,81 @@ public class PatientController {
       choiceBoxPatient.getItems().add("%s".formatted(patient.name));
       choiceBoxPatientAppointment.getItems().add("%s".formatted(patient.name));
     }
+  }
+
+  private void loadSearchResult(ArrayList<Appointment> appointments) {
+
+    appointments.forEach(
+        appointment -> {
+          String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
+          var resMonth = appointment.startTime.get(Calendar.MONTH) + 1;
+          var resDay = appointment.startTime.get(Calendar.DAY_OF_MONTH);
+          var resDayOfWeek = days[appointment.startTime.get(Calendar.DAY_OF_WEEK) - 1];
+          var resHour = appointment.startTime.get(Calendar.HOUR_OF_DAY);
+          var resPhysicianName = String.join("_", appointment.physician.name.split(" "));
+          var resRoomName =
+              appointment.room.roomName.length() == 1
+                  ? "Room-" + appointment.room.roomName
+                  : appointment.room.roomName;
+          var resTreatment = appointment.treatment.toString();
+          // Assemble resulting string.
+          // "05-12 Wed 16:00 Some_Name Room-A Message"
+          var res =
+              "%02d-%02d %s %s:00  %s\t%s\t%s"
+                  .formatted(
+                      resMonth,
+                      resDay,
+                      resDayOfWeek,
+                      resHour,
+                      resPhysicianName,
+                      resRoomName,
+                      resTreatment);
+
+          listViewResult.getItems().add(res);
+        });
+  }
+
+  private void attendAnAppointment() {
+    var appointment =
+        appointmentsForSpecificPatient.get(
+            choiceBoxAppointment.getSelectionModel().getSelectedIndex());
+    if (!appointment.isCancelled() || !appointment.isMissed() || !appointment.isAttended()) {
+      appointment.attend();
+      labelAppointmentStatus.setText(appointment.state.toString());
+      btnMissAppointment.setDisable(true);
+      btnAttendAppointment.setDisable(true);
+      btnCancelAppointment.setDisable(true);
+    }
+    DataController.controller.refreshData();
+  }
+
+  private void missAnAppointment() {
+    var appointment =
+        appointmentsForSpecificPatient.get(
+            choiceBoxAppointment.getSelectionModel().getSelectedIndex());
+    if (!appointment.isCancelled() || !appointment.isMissed() || !appointment.isAttended()) {
+      appointment.miss();
+      labelAppointmentStatus.setText(appointment.state.toString());
+      btnMissAppointment.setDisable(true);
+      btnAttendAppointment.setDisable(true);
+      btnCancelAppointment.setDisable(true);
+    }
+    DataController.controller.refreshData();
+  }
+
+  private void cancelAnAppointment() {
+    var appointment =
+        appointmentsForSpecificPatient.get(
+            choiceBoxAppointment.getSelectionModel().getSelectedIndex());
+    if (!appointment.isCancelled() || !appointment.isMissed() || !appointment.isAttended()) {
+      appointment.cancel();
+      labelAppointmentStatus.setText(appointment.state.toString());
+      btnMissAppointment.setDisable(true);
+      btnAttendAppointment.setDisable(true);
+      btnCancelAppointment.setDisable(true);
+    }
+    DataController.controller.refreshData();
   }
 
   public void search() {
@@ -294,38 +404,5 @@ public class PatientController {
       DataController.controller.refreshData();
     }
     btnPatientRegistration.setDisable(false);
-  }
-
-  private void loadSearchResult(ArrayList<Appointment> appointments) {
-
-    appointments.forEach(
-        appointment -> {
-          String[] days = new String[] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-
-          var resMonth = appointment.startTime.get(Calendar.MONTH) + 1;
-          var resDay = appointment.startTime.get(Calendar.DAY_OF_MONTH);
-          var resDayOfWeek = days[appointment.startTime.get(Calendar.DAY_OF_WEEK) - 1];
-          var resHour = appointment.startTime.get(Calendar.HOUR_OF_DAY);
-          var resPhysicianName = String.join("_", appointment.physician.name.split(" "));
-          var resRoomName =
-              appointment.room.roomName.length() == 1
-                  ? "Room-" + appointment.room.roomName
-                  : appointment.room.roomName;
-          var resTreatment = appointment.treatment.toString();
-          // Assemble resulting string.
-          // "05-12 Wed 16:00 Some_Name Room-A Message"
-          var res =
-              "%02d-%02d %s %s:00  %s\t%s\t%s"
-                  .formatted(
-                      resMonth,
-                      resDay,
-                      resDayOfWeek,
-                      resHour,
-                      resPhysicianName,
-                      resRoomName,
-                      resTreatment);
-
-          listViewResult.getItems().add(res);
-        });
   }
 }

@@ -88,12 +88,12 @@
                     <Label fx:id="labelAppointmentPatientID" alignment="CENTER"/>
                     <Separator orientation="VERTICAL"/>
                     <Label alignment="CENTER" text="Status:"/>
-                    <Label fx:id="labelAppointment" alignment="CENTER"/>
+                    <Label fx:id="labelAppointmentStatus" alignment="CENTER"/>
                 </HBox>
                 <HBox alignment="CENTER" spacing="20">
                     <Button fx:id="btnAttendAppointment" alignment="CENTER" mnemonicParsing="false" text="Attend"/>
-                    <Button fx:id="btnMissAppointment" alignment="CENTER" mnemonicParsing="false" text="Cancel"/>
-                    <Button fx:id="btnCancelAppointment" alignment="CENTER" mnemonicParsing="false" text="Miss"/>
+                    <Button fx:id="btnMissAppointment" alignment="CENTER" mnemonicParsing="false" text="Miss"/>
+                    <Button fx:id="btnCancelAppointment" alignment="CENTER" mnemonicParsing="false" text="Cancel"/>
                 </HBox>
             </VBox>
         </TitledPane>

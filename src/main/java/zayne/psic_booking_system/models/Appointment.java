@@ -111,6 +111,17 @@ public class Appointment {
     return res.get();
   }
 
+  public static Appointment getAppointmentById(String id) {
+    var res = new AtomicReference<Appointment>(null);
+    var _id = Long.parseLong(id.strip());
+    appointments.forEach(
+        appointment -> {
+          if (appointment._id == _id) res.set(appointment);
+        });
+    assert res.get() != null;
+    return res.get();
+  }
+
   public Appointment book() {
     this.state = Appointment_State.BOOKED;
     // var isVisitor = this.patient == null;
@@ -165,6 +176,20 @@ public class Appointment {
     return this;
   }
 
+  @Override
+  public String toString() {
+    var resMonth = this.startTime.get(Calendar.MONTH) + 1;
+    var resDate = this.startTime.get(Calendar.DAY_OF_MONTH);
+    var resHour = this.startTime.get(Calendar.HOUR_OF_DAY);
+    var resPhysicianName = String.join("_", this.physician.name.split(" "));
+    var resTreatment = this.treatment.name();
+
+    var res =
+        "%02d-%02d %s:00 %s\t%s #%s"
+            .formatted(resMonth, resDate, resHour, resPhysicianName, resTreatment, this._id);
+    return res;
+  }
+
   public String getStat() {
     // Done: potential display issue
     return "ID:\t\t\t%s\nPatient:\t\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
@@ -181,6 +206,14 @@ public class Appointment {
                     this.startTime.get(Calendar.HOUR_OF_DAY)),
             this.room.roomName,
             this.notes);
+  }
+
+  public boolean isAttended() {
+    return this.state == Appointment_State.ATTENDED;
+  }
+
+  public boolean isMissed() {
+    return this.state == Appointment_State.MISSED;
   }
 
   /**
