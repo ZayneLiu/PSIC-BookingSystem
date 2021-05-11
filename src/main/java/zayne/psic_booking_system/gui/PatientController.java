@@ -114,6 +114,7 @@ public class PatientController {
         .addListener(
             (event) -> {
               // TODO: Change slots showing to consultation.
+              search();
             });
 
     btnSearch.setOnMouseClicked(mouseEvent -> search());
@@ -254,35 +255,8 @@ public class PatientController {
       var physicians = Physician.getPhysiciansByName(keyword.strip());
 
       for (Physician physician : physicians) {
-        // Availability Pipeline:::: Physician's side: Appointments for the same physician.
-        var availableAppointments = physician.getAvailableAppointments();
-        // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
-        var parallelAppointments = new ArrayList<Appointment>();
-        availableAppointments.forEach(
-            appointment -> {
-              patient
-                  .getBookedAppointment()
-                  .forEach(
-                      patientAppointment -> {
-                        var isSameMonth =
-                            appointment.startTime.get(Calendar.MONTH)
-                                == patientAppointment.startTime.get(Calendar.MONTH);
-                        var isSameDay =
-                            appointment.startTime.get(Calendar.DAY_OF_MONTH)
-                                == patientAppointment.startTime.get(Calendar.DAY_OF_MONTH);
-                        var isSameTime =
-                            appointment.startTime.get(Calendar.HOUR_OF_DAY)
-                                == patientAppointment.startTime.get(Calendar.HOUR_OF_DAY);
+        var availableAppointments = availabilityPipeline(physician, patient);
 
-                        var isSameDate = isSameMonth && isSameDay && isSameTime;
-
-                        if (isSameDate && !patientAppointment.isCancelled()) {
-
-                          parallelAppointments.add(appointment);
-                        }
-                      });
-            });
-        availableAppointments.removeAll(parallelAppointments);
         // Add available appointment to search result view.
         loadSearchResult(availableAppointments);
       }
@@ -301,35 +275,8 @@ public class PatientController {
 
       physiciansWithTargetExpertise.forEach(
           physician -> {
-            // Availability Pipeline:::: Physician's side: Appointments for the same physician.
-            var availableAppointments = physician.getAvailableAppointments();
-            // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
-            var parallelAppointments = new ArrayList<Appointment>();
-            availableAppointments.forEach(
-                appointment -> {
-                  patient
-                      .getBookedAppointment()
-                      .forEach(
-                          patientAppointment -> {
-                            var isSameMonth =
-                                appointment.startTime.get(Calendar.MONTH)
-                                    == patientAppointment.startTime.get(Calendar.MONTH);
-                            var isSameDay =
-                                appointment.startTime.get(Calendar.DAY_OF_MONTH)
-                                    == patientAppointment.startTime.get(Calendar.DAY_OF_MONTH);
-                            var isSameTime =
-                                appointment.startTime.get(Calendar.HOUR_OF_DAY)
-                                    == patientAppointment.startTime.get(Calendar.HOUR_OF_DAY);
+            var availableAppointments = availabilityPipeline(physician, patient);
 
-                            var isSameDate = isSameMonth && isSameDay && isSameTime;
-
-                            if (isSameDate && !patientAppointment.isCancelled()) {
-
-                              parallelAppointments.add(appointment);
-                            }
-                          });
-                });
-            availableAppointments.removeAll(parallelAppointments);
             // Add available appointment to search result view.
             loadSearchResult(availableAppointments);
           });
@@ -347,6 +294,39 @@ public class PatientController {
     }
     // System.out.println(choiceBoxExpertise.getValue());
     // if (searchBy)
+  }
+
+  private ArrayList<Appointment> availabilityPipeline(Physician physician, Patient patient) {
+    var availableAppointments = physician.getAvailableAppointments();
+    // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
+    var parallelAppointments = new ArrayList<Appointment>();
+    availableAppointments.forEach(
+        appointment -> {
+          patient
+              .getBookedAppointment()
+              .forEach(
+                  patientAppointment -> {
+                    var isSameMonth =
+                        appointment.startTime.get(Calendar.MONTH)
+                            == patientAppointment.startTime.get(Calendar.MONTH);
+                    var isSameDay =
+                        appointment.startTime.get(Calendar.DAY_OF_MONTH)
+                            == patientAppointment.startTime.get(Calendar.DAY_OF_MONTH);
+                    var isSameTime =
+                        appointment.startTime.get(Calendar.HOUR_OF_DAY)
+                            == patientAppointment.startTime.get(Calendar.HOUR_OF_DAY);
+
+                    var isSameDate = isSameMonth && isSameDay && isSameTime;
+
+                    if (isSameDate && !patientAppointment.isCancelled()) {
+
+                      parallelAppointments.add(appointment);
+                    }
+                  });
+        });
+    availableAppointments.removeAll(parallelAppointments);
+
+    return availableAppointments;
   }
 
   public void book() {
