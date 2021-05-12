@@ -38,9 +38,14 @@ public class PatientController {
   public Button btnAttendAppointment;
   public Button btnMissAppointment;
   public Button btnCancelAppointment;
+  public TextField textVisitorName;
   // public DatePicker datePickerPatient;
 
   public ArrayList<Appointment> appointmentsForSpecificPatient = new ArrayList<>();
+
+  public boolean isVisitor() {
+    return radioBtnIsVisitor.isSelected();
+  }
 
   /* method `initialize()` is called after the constructor. */
   @FXML
@@ -144,7 +149,9 @@ public class PatientController {
         .disableProperty()
         .bind(choiceBoxPatientAppointment.valueProperty().isEqualTo(""));
 
+    textVisitorName.disableProperty().bind(radioBtnIsPatient.selectedProperty());
     choiceBoxPatient.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
+
     labelPatientID.disableProperty().bind(radioBtnIsVisitor.selectedProperty());
   }
 
@@ -168,6 +175,7 @@ public class PatientController {
           var resDay = appointment.startTime.get(Calendar.DAY_OF_MONTH);
           var resDayOfWeek = days[appointment.startTime.get(Calendar.DAY_OF_WEEK) - 1];
           var resHour = appointment.startTime.get(Calendar.HOUR_OF_DAY);
+          var resMinute = appointment.startTime.get(Calendar.MINUTE);
           var resPhysicianName = String.join("_", appointment.physician.name.split(" "));
           var resRoomName =
               appointment.room.roomName.length() == 1
@@ -176,16 +184,31 @@ public class PatientController {
           var resTreatment = appointment.treatment.toString();
           // Assemble resulting string.
           // "05-12 Wed 16:00 Some_Name Room-A Message"
-          var res =
-              "%02d-%02d %s %s:00  %s\t%s\t%s"
-                  .formatted(
-                      resMonth,
-                      resDay,
-                      resDayOfWeek,
-                      resHour,
-                      resPhysicianName,
-                      resRoomName,
-                      resTreatment);
+          var res = "";
+          if (!isVisitor())
+            res =
+                "%02d-%02d %s %s:00  %s\t%s\t%s"
+                    .formatted(
+                        resMonth,
+                        resDay,
+                        resDayOfWeek,
+                        resHour,
+                        resPhysicianName,
+                        resRoomName,
+                        resTreatment);
+          else
+            res =
+                "%02d-%02d %s %s:%02d  %s\t%s\t%s - %s"
+                    .formatted(
+                        resMonth,
+                        resDay,
+                        resDayOfWeek,
+                        resHour,
+                        resMinute,
+                        resPhysicianName,
+                        resRoomName,
+                        resTreatment,
+                        appointment.physician.expertise.get(0));
 
           listViewResult.getItems().add(res);
         });
@@ -239,13 +262,12 @@ public class PatientController {
     listViewResult.getItems().clear();
     var searchByName = choiceBoxSearchBy.getValue().equals("Name");
 
-    if (choiceBoxPatient.getValue() == null) {
+    if (choiceBoxPatient.getValue() == null && !isVisitor()) {
       labelErrMsg.setText("Please Select Patient!");
       return;
     }
 
-    var patient =
-        radioBtnIsVisitor.isSelected() ? null : Patient.getPatient(choiceBoxPatient.getValue());
+    var patient = isVisitor() ? null : Patient.getPatient(choiceBoxPatient.getValue());
     var keyword = textFieldKeyword.getText().strip();
     var expertise =
         choiceBoxExpertise.getValue() == null ? null : choiceBoxExpertise.getValue().strip();
@@ -255,11 +277,17 @@ public class PatientController {
         labelErrMsg.setText("Enter Search Keyword!");
         return;
       }
-      // Done： get target physician's all slot and availability
-      var physicians = Physician.getPhysiciansByName(keyword.strip());
 
+      // Done： get target physician's all slot and availability
+      var availableAppointments = new ArrayList<Appointment>();
+
+      var physicians = Physician.getPhysiciansByName(keyword.strip());
       for (Physician physician : physicians) {
-        var availableAppointments = Helper.availabilityPipeline(physician, patient);
+        if (isVisitor()) {
+          availableAppointments = physician.getAvailableConsultations();
+        } else {
+          availableAppointments = Helper.availabilityPipeline(physician, patient);
+        }
 
         // Add available appointment to search result view.
         loadSearchResult(availableAppointments);
@@ -321,10 +349,15 @@ public class PatientController {
     var physician =
         Physician.getPhysiciansByName(String.join(" ", data[3].split("_")).strip()).get(0);
 
-    if (radioBtnIsVisitor.isSelected()) {
+    if (isVisitor()) {
       // Visitor
       // TODO: visitor name input.
-      var name = "";
+
+      if (textVisitorName.getText().strip().equals("")) {
+        labelErrMsg.setText("Enter Visitor Name!");
+        return;
+      }
+      var name = textVisitorName.getText().strip();
       var visitor = new Visitor(name);
       var appointment = new Appointment(date, physician);
       visitor.bookAppointment(appointment);

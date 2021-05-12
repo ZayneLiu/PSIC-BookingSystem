@@ -9,7 +9,8 @@ public class Visitor extends Person {
 
   public Appointment bookAppointment(Appointment appointment) {
     appointment.patient = null;
-    appointment.notes = "Visitor Name: %s".formatted(this.name);
+    appointment.notes = "Visitor: %s".formatted(this.name);
+    appointment.treatment = Treatment.CONSULTATION;
 
     return appointment.book();
   }

@@ -69,7 +69,6 @@ public class Physician extends Person {
   }
 
   public ArrayList<Appointment> getAvailableConsultations() {
-    // TODO: filter out consultations.
     // var searchResult = new ArrayList<String>();
     var availableConsultations = new ArrayList<Appointment>();
 
@@ -88,6 +87,13 @@ public class Physician extends Person {
             availableConsultations.add(appointment);
           }
         });
+
+    var bookedConsultations = this.getBookedConsultations();
+
+    System.out.println(availableConsultations.size());
+    availableConsultations.removeAll(bookedConsultations);
+    System.out.println(availableConsultations.size());
+
 
     return availableConsultations;
   }
@@ -194,6 +200,10 @@ public class Physician extends Person {
 
   public ArrayList<Appointment> getBookedAppointments() {
     return Appointment.getBookedAppointmentsForPhysician(this);
+  }
+
+  public ArrayList<Appointment> getBookedConsultations(){
+    return Appointment.getBookedConsultationsForPhysician(this);
   }
 
   public String getStat() {

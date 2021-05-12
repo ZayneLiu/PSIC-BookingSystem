@@ -3,6 +3,7 @@ package zayne.psic_booking_system.utils;
 import zayne.psic_booking_system.models.Appointment;
 import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
+import zayne.psic_booking_system.models.Visitor;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,7 +43,6 @@ public class Helper {
   }
 
   public static ArrayList<Appointment> availabilityPipeline(Physician physician, Patient patient) {
-    var isVisitor = patient == null;
 
     var availableAppointments = physician.getAvailableAppointments();
     // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.

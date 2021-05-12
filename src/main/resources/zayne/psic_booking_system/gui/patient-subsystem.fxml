@@ -28,15 +28,18 @@
                     <ToggleGroup fx:id="userIdentity"/>
                 </toggleGroup>
             </RadioButton>
+            <TextField fx:id="textVisitorName" prefHeight="25.0" prefWidth="100.0"/>
             <Separator orientation="VERTICAL"/>
             <RadioButton fx:id="radioBtnIsPatient" mnemonicParsing="false" text="Patient" toggleGroup="$userIdentity"/>
             <ChoiceBox fx:id="choiceBoxPatient" prefHeight="25.0" prefWidth="100.0"/>
-            <Label fx:id="labelErrMsg" alignment="CENTER" prefHeight="17.0" prefWidth="181.0" textAlignment="CENTER"/>
             <Button fx:id="btnSearch" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" text="Search">
                 <HBox.margin>
                     <Insets left="10.0"/>
                 </HBox.margin>
             </Button>
+        </HBox>
+        <HBox alignment="CENTER" spacing="10.0">
+            <Label fx:id="labelErrMsg" alignment="CENTER" prefHeight="17.0" prefWidth="300.0" textAlignment="CENTER"/>
         </HBox>
 
         <Separator prefWidth="200.0"/>

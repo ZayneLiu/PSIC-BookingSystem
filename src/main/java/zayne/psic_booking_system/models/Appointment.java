@@ -38,6 +38,7 @@ public class Appointment {
     this._id = Calendar.getInstance().getTimeInMillis();
     this.startTime = start;
     this.physician = physician;
+    this.room = physician.room;
   }
 
   // public Appointment(Calendar start, Physician physician, Patient patient) {
@@ -142,6 +143,18 @@ public class Appointment {
     return resConsultation.get();
   }
 
+  public static ArrayList<Appointment> getBookedConsultationsForPhysician(Physician physician) {
+    var resConsultations = new ArrayList<Appointment>();
+    appointments.forEach(
+        appointment -> {
+          if (appointment.physician._id == physician._id) {
+            resConsultations.add(appointment);
+          }
+        });
+
+    return resConsultations;
+  }
+
   public Appointment book() {
     this.state = Appointment_State.BOOKED;
     // var isVisitor = this.patient == null;
@@ -212,20 +225,60 @@ public class Appointment {
 
   public String getStat() {
     // Done: potential display issue
-    return "ID:\t\t\t%s\nPatient:\t\t%s\nPhysician:\t%s\nTreatment:\t%s\nState:\t\t%s\nTime:\t\t%s\nRoom:\t\t%s\nNotes:\t%s"
-        .formatted(
-            this._id,
-            this.patient.name,
-            this.physician.name,
-            this.treatment,
-            this.state,
-            "%02d-%02d %s:00"
-                .formatted(
-                    this.startTime.get(Calendar.MONTH) + 1,
-                    this.startTime.get(Calendar.DAY_OF_MONTH),
-                    this.startTime.get(Calendar.HOUR_OF_DAY)),
-            this.room.roomName,
-            this.notes);
+    var res = "";
+    if (patient != null)
+      res =
+          ("""
+              ID:\t\t\t%s
+              Patient:\t\t%s
+              Physician:\t%s
+              Treatment:\t%s
+              State:\t\t%s
+              Time:\t\t%s
+              Duration:\t\t%s
+              Room:\t\t%s
+              Notes:\t%s""")
+              .formatted(
+                  this._id,
+                  this.patient.name,
+                  this.physician.name,
+                  this.treatment,
+                  this.state,
+                  "%02d-%02d %s:00"
+                      .formatted(
+                          this.startTime.get(Calendar.MONTH) + 1,
+                          this.startTime.get(Calendar.DAY_OF_MONTH),
+                          this.startTime.get(Calendar.HOUR_OF_DAY)),
+                  "2hrs",
+                  this.room.roomName,
+                  this.notes);
+    else
+      res =
+          ("""
+              ID:\t\t\t%s
+              Patient:\t\t%s
+              Physician:\t%s
+              Treatment:\t%s
+              State:\t\t%s
+              Time:\t\t%s
+              Duration:\t\t%s
+              Room:\t\t%s
+              Notes:\t%s""")
+              .formatted(
+                  this._id,
+                  "_Visitor_",
+                  this.physician.name,
+                  this.treatment,
+                  this.state,
+                  "%02d-%02d %s:00"
+                      .formatted(
+                          this.startTime.get(Calendar.MONTH) + 1,
+                          this.startTime.get(Calendar.DAY_OF_MONTH),
+                          this.startTime.get(Calendar.HOUR_OF_DAY)),
+                  "30min",
+                  this.room.roomName,
+                  this.notes);
+    return res;
   }
 
   public boolean isAttended() {
