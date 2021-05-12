@@ -1,20 +1,9 @@
 package zayne.psic_booking_system.utils;
 
-import zayne.psic_booking_system.models.Appointment;
-import zayne.psic_booking_system.models.Patient;
-import zayne.psic_booking_system.models.Physician;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Helper {
-  /**
-   * Get 4 slots on given day. <br>
-   * `May-4` -> [May-4-10:00, May-4-12:00, May-4-14:00, May-4-16:00]
-   *
-   * @param date given day
-   * @return all 4 2hr slots on that day.
-   */
   public static ArrayList<Calendar> getSlotsOnGivenDay(Calendar date) {
     var slots = new ArrayList<Calendar>();
 
@@ -39,39 +28,5 @@ public class Helper {
     slots.add(slot4);
 
     return slots;
-  }
-
-  public static ArrayList<Appointment> availabilityPipeline(Physician physician, Patient patient) {
-    var isVisitor = patient == null;
-
-    var availableAppointments = physician.getAvailableAppointments();
-    // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
-    var parallelAppointments = new ArrayList<Appointment>();
-    availableAppointments.forEach(
-        appointment -> {
-          patient
-              .getBookedAppointment()
-              .forEach(
-                  patientAppointment -> {
-                    var isSameDate =
-                        isSameDateAndTime(appointment.startTime, patientAppointment.startTime);
-
-                    if (isSameDate && !patientAppointment.isCancelled()) {
-
-                      parallelAppointments.add(appointment);
-                    }
-                  });
-        });
-    availableAppointments.removeAll(parallelAppointments);
-
-    return availableAppointments;
-  }
-
-  public static boolean isSameDateAndTime(Calendar c1, Calendar c2) {
-    var isSameMonth = c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH);
-    var isSameDay = c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH);
-    var isSameTime = c1.get(Calendar.HOUR_OF_DAY) == c2.get(Calendar.HOUR_OF_DAY);
-
-    return isSameMonth && isSameDay && isSameTime;
   }
 }
