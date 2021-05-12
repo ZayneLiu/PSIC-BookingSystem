@@ -53,7 +53,7 @@ public class Patient extends Person {
     return patients;
   }
 
-  public ArrayList<Appointment> getBookedAppointment() {
+  public ArrayList<Appointment> getBookedAppointments() {
     var booked = new ArrayList<Appointment>();
     Appointment.getAppointments()
         .forEach(

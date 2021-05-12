@@ -37,6 +37,11 @@ public class HomePageController {
     HBox fxmlData = FXMLLoader.load(resData);
     hBoxData.getChildren().addAll(fxmlData.getChildren());
 
+    var resReport = ReportController.class.getResource("report-subsystem.fxml");
+    assert resReport != null;
+    VBox fxmlReport = FXMLLoader.load(resReport);
+    vBoxReport.getChildren().addAll(fxmlReport.getChildren());
+
     controller = this;
   }
 }

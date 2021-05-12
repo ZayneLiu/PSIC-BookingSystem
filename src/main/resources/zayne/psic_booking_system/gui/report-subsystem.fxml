@@ -6,9 +6,52 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="zayne.psic_booking_system.gui.ReportController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="zayne.psic_booking_system.gui.ReportController"
+      prefHeight="Infinity" prefWidth="600.0">
+
+    <HBox>
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+        <VBox>
+            <HBox alignment="CENTER">
+                <Label text="Select a patient: "/>
+                <ChoiceBox fx:id="choiceBoxPatient" prefHeight="25.0" prefWidth="100.0"/>
+            </HBox>
+            <TitledPane fx:id="patientAppointmentPane" prefWidth="620.0" text="Patients">
+                <ScrollPane>
+                    <VBox fx:id="patientAppointmentList" spacing="10.0">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </TitledPane>
+        </VBox>
+        <VBox>
+            <!--            <Button fx:id="generateReport" text="Generate Report (all appointments)"/>-->
+            <TitledPane fx:id="appointmentPane" prefWidth="620.0" text="All Appointments">
+                <ScrollPane>
+                    <VBox fx:id="appointmentList" spacing="10.0">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </TitledPane>
+            <TitledPane fx:id="visitorAppointmentPane" prefWidth="620.0" text="Visitor Appointments">
+                <ScrollPane>
+                    <VBox fx:id="visitorAppointmentList" spacing="10.0">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </TitledPane>
+        </VBox>
+    </HBox>
 </VBox>

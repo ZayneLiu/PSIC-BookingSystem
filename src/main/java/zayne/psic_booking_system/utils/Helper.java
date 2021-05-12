@@ -1,9 +1,10 @@
 package zayne.psic_booking_system.utils;
 
+import zayne.psic_booking_system.gui.DataController;
+import zayne.psic_booking_system.gui.ReportController;
 import zayne.psic_booking_system.models.Appointment;
 import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
-import zayne.psic_booking_system.models.Visitor;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,7 +51,7 @@ public class Helper {
     availableAppointments.forEach(
         appointment -> {
           patient
-              .getBookedAppointment()
+              .getBookedAppointments()
               .forEach(
                   patientAppointment -> {
                     var isSameDate =
@@ -74,5 +75,10 @@ public class Helper {
     var isSameMinute = c1.get(Calendar.MINUTE) == c2.get(Calendar.MINUTE);
 
     return isSameMonth && isSameDay && isSameTime && isSameMinute;
+  }
+
+  public static void refreshData(){
+    DataController.controller.refreshData();
+    ReportController.controller.refreshData();
   }
 }
