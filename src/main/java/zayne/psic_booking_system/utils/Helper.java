@@ -71,7 +71,8 @@ public class Helper {
     var isSameMonth = c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH);
     var isSameDay = c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH);
     var isSameTime = c1.get(Calendar.HOUR_OF_DAY) == c2.get(Calendar.HOUR_OF_DAY);
+    var isSameMinute = c1.get(Calendar.MINUTE) == c2.get(Calendar.MINUTE);
 
-    return isSameMonth && isSameDay && isSameTime;
+    return isSameMonth && isSameDay && isSameTime && isSameMinute;
   }
 }
