@@ -4,8 +4,8 @@ import org.junit.Test;
 
 public class ReportTest {
 
-    @Test
-    public void getAllAppointmentsTest() {
-        Report.getReportAllAppointments();
-    }
+    // @Test
+    // public void getAllAppointmentsTest() {
+    //     Report.getReportAllAppointments();
+    // }
 }
