@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import zayne.psic_booking_system.models.Appointment;
 import zayne.psic_booking_system.models.Patient;
+import zayne.psic_booking_system.models.Visitor;
 
 public class ReportController {
   public TitledPane appointmentPane;
@@ -17,6 +18,8 @@ public class ReportController {
   public TitledPane patientAppointmentPane;
 
   public static ReportController controller;
+  public TitledPane visitorAppointmentPane;
+  public VBox visitorAppointmentList;
 
   public ReportController() {
     controller = this;
@@ -73,11 +76,31 @@ public class ReportController {
 
   public void refreshData() {
     this.patientAppointmentList.getChildren().clear();
+    this.patientAppointmentPane.setText("Patient Appointments");
     this.choiceBoxPatient.getItems().clear();
     loadPatients();
 
     this.appointmentList.getChildren().clear();
     loadAppointments();
+
+    this.visitorAppointmentList.getChildren().clear();
+    loadVisitorAppointments();
+  }
+
+  private void loadVisitorAppointments() {
+    var visitorAppointments = Visitor.getVisitorAppointments();
+    visitorAppointmentPane.setText(
+        "Visitor Appointments (%d appointments)".formatted(visitorAppointments.size()));
+    visitorAppointments.forEach(
+        appointment -> {
+          var label = new Label();
+          // label.setPrefWidth(Control.USE_COMPUTED_SIZE);
+          label.setTextAlignment(TextAlignment.LEFT);
+          label.setAlignment(Pos.CENTER_LEFT);
+          label.setText(appointment.getStat());
+          visitorAppointmentList.getChildren().add(label);
+          visitorAppointmentList.getChildren().add(new Separator());
+        });
   }
 
   private void loadPatients() {
