@@ -29,7 +29,7 @@ public class Physician extends Person {
     super(name);
   }
 
-  public static void addPhysicians(Physician physician) {
+  public static void addPhysician(Physician physician) {
     physicians.add(physician);
   }
 

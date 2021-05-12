@@ -85,11 +85,11 @@ public class DataLoader {
     physician5.consultHours[0] = Calendar.WEDNESDAY;
     physician5.consultHours[1] = 12;
 
-    Physician.addPhysicians((physician1));
-    Physician.addPhysicians((physician2));
-    Physician.addPhysicians((physician3));
-    Physician.addPhysicians((physician4));
-    Physician.addPhysicians((physician5));
+    Physician.addPhysician((physician1));
+    Physician.addPhysician((physician2));
+    Physician.addPhysician((physician3));
+    Physician.addPhysician((physician4));
+    Physician.addPhysician((physician5));
   }
 
   public static void loadRooms() {
