@@ -1,6 +1,7 @@
 package zayne.psic_booking_system.models;
 
 import zayne.psic_booking_system.models.Physician.Treatment;
+import zayne.psic_booking_system.utils.Helper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,16 +33,11 @@ public class Appointment {
    *
    * @param start
    * @param physician
-   * @param visitor
    */
-  public Appointment(Calendar start, Physician physician, Visitor visitor) {
+  public Appointment(Calendar start, Physician physician) {
     this._id = Calendar.getInstance().getTimeInMillis();
     this.startTime = start;
     this.physician = physician;
-    this.patient = null;
-    this.notes = "Visitor Name: %s".formatted(visitor.name);
-
-    // TODO: Consultation slots and room availability.
   }
 
   // public Appointment(Calendar start, Physician physician, Patient patient) {
@@ -120,6 +116,30 @@ public class Appointment {
         });
     assert res.get() != null;
     return res.get();
+  }
+
+  public static ArrayList<Appointment> getConsultations() {
+    var res = new ArrayList<Appointment>();
+    appointments.forEach(
+        appointment -> {
+          if (appointment.patient == null) res.add(appointment);
+        });
+    return res;
+  }
+
+  public static Appointment getExistingConsultationIfAny(Calendar slot, Physician physician) {
+    var resConsultation = new AtomicReference<Appointment>(null);
+    getConsultations()
+        .forEach(
+            appointment -> {
+              var isSameTime = Helper.isSameDateAndTime(appointment.startTime, slot);
+              var isSamePhysician = appointment.physician._id == physician._id;
+              if (isSameTime && isSamePhysician) {
+                resConsultation.set(appointment);
+              }
+            });
+
+    return resConsultation.get();
   }
 
   public Appointment book() {

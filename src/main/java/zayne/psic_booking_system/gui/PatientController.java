@@ -5,6 +5,9 @@ import javafx.scene.control.*;
 import zayne.psic_booking_system.models.Appointment;
 import zayne.psic_booking_system.models.Patient;
 import zayne.psic_booking_system.models.Physician;
+import zayne.psic_booking_system.models.Physician.Treatment;
+import zayne.psic_booking_system.models.Visitor;
+import zayne.psic_booking_system.utils.Helper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -241,7 +244,8 @@ public class PatientController {
       return;
     }
 
-    var patient = Patient.getPatient(choiceBoxPatient.getValue());
+    var patient =
+        radioBtnIsVisitor.isSelected() ? null : Patient.getPatient(choiceBoxPatient.getValue());
     var keyword = textFieldKeyword.getText().strip();
     var expertise =
         choiceBoxExpertise.getValue() == null ? null : choiceBoxExpertise.getValue().strip();
@@ -255,7 +259,7 @@ public class PatientController {
       var physicians = Physician.getPhysiciansByName(keyword.strip());
 
       for (Physician physician : physicians) {
-        var availableAppointments = availabilityPipeline(physician, patient);
+        var availableAppointments = Helper.availabilityPipeline(physician, patient);
 
         // Add available appointment to search result view.
         loadSearchResult(availableAppointments);
@@ -275,7 +279,7 @@ public class PatientController {
 
       physiciansWithTargetExpertise.forEach(
           physician -> {
-            var availableAppointments = availabilityPipeline(physician, patient);
+            var availableAppointments = Helper.availabilityPipeline(physician, patient);
 
             // Add available appointment to search result view.
             loadSearchResult(availableAppointments);
@@ -296,45 +300,13 @@ public class PatientController {
     // if (searchBy)
   }
 
-  private ArrayList<Appointment> availabilityPipeline(Physician physician, Patient patient) {
-    var availableAppointments = physician.getAvailableAppointments();
-    // Availability Pipeline:::: Patient's side: no parallel appointments are allowed.
-    var parallelAppointments = new ArrayList<Appointment>();
-    availableAppointments.forEach(
-        appointment -> {
-          patient
-              .getBookedAppointment()
-              .forEach(
-                  patientAppointment -> {
-                    var isSameMonth =
-                        appointment.startTime.get(Calendar.MONTH)
-                            == patientAppointment.startTime.get(Calendar.MONTH);
-                    var isSameDay =
-                        appointment.startTime.get(Calendar.DAY_OF_MONTH)
-                            == patientAppointment.startTime.get(Calendar.DAY_OF_MONTH);
-                    var isSameTime =
-                        appointment.startTime.get(Calendar.HOUR_OF_DAY)
-                            == patientAppointment.startTime.get(Calendar.HOUR_OF_DAY);
-
-                    var isSameDate = isSameMonth && isSameDay && isSameTime;
-
-                    if (isSameDate && !patientAppointment.isCancelled()) {
-
-                      parallelAppointments.add(appointment);
-                    }
-                  });
-        });
-    availableAppointments.removeAll(parallelAppointments);
-
-    return availableAppointments;
-  }
-
   public void book() {
     var selected = listViewResult.getSelectionModel().getSelectedItem();
     if (selected == null) {
       labelErrMsg.setText("Select a slot to book!");
       return;
     }
+
     // `05-05 Wed 14:00  Betsy_Hopper	Room-A	Neural_Mobilisation`
     // regex to split a string by multiple consecutive spaces.
     var data = selected.split("\\s+");
@@ -344,20 +316,42 @@ public class PatientController {
         Integer.parseInt(data[0].split("-")[0]) - 1,
         Integer.parseInt(data[0].split("-")[1]),
         Integer.parseInt(data[2].split(":")[0]),
+        0,
         0);
     var physician =
         Physician.getPhysiciansByName(String.join(" ", data[3].split("_")).strip()).get(0);
-    var patient = Patient.getPatient(choiceBoxPatient.getValue().strip());
-    var treatment = Physician.Treatment.valueOf(data[5].toUpperCase());
-    // var room = Room.getRoom(data[4].split("-")[data[4].split("-").length - 1]);
 
-    var appointment = new Appointment(date, physician, patient, treatment).book();
-    if (appointment == null) labelErrMsg.setText("NOT booked (duplicated).");
-    else {
+    if (radioBtnIsVisitor.isSelected()) {
+      // Visitor
+      // TODO: visitor name input.
+      var name = "";
+      var visitor = new Visitor(name);
+      var appointment = new Appointment(date, physician);
+      visitor.bookAppointment(appointment);
+
       labelErrMsg.setText("Appointment booked!");
       DataController.controller.refreshData();
       System.out.println(appointment.getStat());
       search();
+    }
+
+    if (radioBtnIsPatient.isSelected()) {
+
+      var patient = Patient.getPatient(choiceBoxPatient.getValue().strip());
+      var treatment = Treatment.valueOf(data[5].toUpperCase());
+      // var room = Room.getRoom(data[4].split("-")[data[4].split("-").length - 1]);
+
+      var appointment = new Appointment(date, physician, patient, treatment);
+
+      appointment = patient.bookAppointment(appointment);
+
+      if (appointment == null) labelErrMsg.setText("NOT booked (duplicated).");
+      else {
+        labelErrMsg.setText("Appointment booked!");
+        DataController.controller.refreshData();
+        System.out.println(appointment.getStat());
+        search();
+      }
     }
   }
 

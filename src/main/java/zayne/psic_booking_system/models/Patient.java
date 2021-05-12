@@ -58,7 +58,7 @@ public class Patient extends Person {
     Appointment.getAppointments()
         .forEach(
             appointment -> {
-              // TODO: General appointments only, filter out consultations;
+              // Done: General appointments only, filter out consultations;
               // appointment.type
               if (appointment.patient == null) return;
               if (appointment.patient._id == this._id) {
@@ -68,9 +68,8 @@ public class Patient extends Person {
     return booked;
   }
 
-  public Appointment bookAppointment(Calendar start, Physician physician, Treatment treatment) {
-    var appointment = new Appointment(start, physician, this, treatment).book();
-    return appointment;
+  public Appointment bookAppointment(Appointment appointment) {
+    return appointment.book();
   }
 
   public void attendAppointment(Appointment appointment) {

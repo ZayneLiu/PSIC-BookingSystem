@@ -14,7 +14,6 @@ public class App extends Application {
   public static Scene scene;
 
   public App() {
-    // TODO: Load predefined data
     DataLoader.load();
   }
 

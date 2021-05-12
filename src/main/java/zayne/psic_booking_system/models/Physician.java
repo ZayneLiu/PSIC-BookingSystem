@@ -3,7 +3,6 @@ package zayne.psic_booking_system.models;
 import zayne.psic_booking_system.utils.Helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -44,19 +43,12 @@ public class Physician extends Person {
   }
 
   public ArrayList<Appointment> getAvailableAppointments() {
+    // TODO: filter out consultations.
     // var searchResult = new ArrayList<String>();
     var availableAppointments = new ArrayList<Appointment>();
 
-    var slots = new ArrayList<Calendar>();
-    // Get all dates in the month the physician is working.
-    // e.g. [Tue, Fri] -> [May-4, May-7, May-11, May-14, May-18, May-21, May-25, May-28]
-    var workingDays = this.getWorkingDates();
-    workingDays.forEach(
-        calendar -> {
-          // Get 4 slots on given day.
-          // `May-4` -> [May-4-10:00, May-4-12:00, May-4-14:00, May-4-16:00]
-          slots.addAll(Helper.getSlotsOnGivenDay(calendar));
-        });
+    var slots = this.getWorkingSlots();
+    slots.removeAll(this.getConsultingSlots());
 
     slots.forEach(
         slot -> {
@@ -74,6 +66,30 @@ public class Physician extends Person {
         });
 
     return availableAppointments;
+  }
+
+  public ArrayList<Appointment> getAvailableConsultations() {
+    // TODO: filter out consultations.
+    // var searchResult = new ArrayList<String>();
+    var availableConsultations = new ArrayList<Appointment>();
+
+    var slots = this.getConsultingSlots();
+    // Get all dates in the month the physician is working.
+    // e.g. [Tue, Fri] -> [May-4, May-7, May-11, May-14, May-18, May-21, May-25, May-28]
+
+    slots.forEach(
+        slot -> {
+          var resConsultation = Appointment.getExistingConsultationIfAny(slot, this);
+          if (resConsultation == null) {
+            // No appointment booked for this physician at this date and slot.
+            // Current slot is available.
+            var appointment = new Appointment(slot, this, null, Treatment.CONSULTATION);
+
+            availableConsultations.add(appointment);
+          }
+        });
+
+    return availableConsultations;
   }
 
   /**
@@ -114,28 +130,66 @@ public class Physician extends Person {
     return result;
   }
 
-  public static ArrayList<Physician> getPhysiciansByTreatment(Treatment treatment) {
-    var res = new ArrayList<Physician>();
-    physicians.forEach(
-        physician -> {
-          if (physician.treatments.contains(treatment)) res.add(physician);
-        });
-    return res;
-  }
+  // public static ArrayList<Physician> getPhysiciansByTreatment(Treatment treatment) {
+  //   var res = new ArrayList<Physician>();
+  //   physicians.forEach(
+  //       physician -> {
+  //         if (physician.treatments.contains(treatment)) res.add(physician);
+  //       });
+  //   return res;
+  // }
 
-  public ArrayList<Calendar> getWorkingDates() {
-    var resDays = new ArrayList<Calendar>();
-    var start = Calendar.getInstance();
-    start.set(2021, Calendar.MAY, 1);
+  /**
+   * // Get all slots on dates in the month the physician is working. <br>
+   * e.g. [Tue, Fri] -> [May-4, May-7, May-11, May-14, May-18, May-21, May-25, May-28]
+   *
+   * @return list of all slots on the physician's working days, including consultations.
+   */
+  public ArrayList<Calendar> getWorkingSlots() {
+    var resSlots = new ArrayList<Calendar>();
+    var date = Calendar.getInstance();
+    date.set(2021, Calendar.MAY, 1, 0, 0, 0);
 
     do {
+      var dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
 
-      if (Arrays.stream(this.workingDays).anyMatch((day) -> day == start.get(Calendar.DAY_OF_WEEK)))
-        resDays.add((Calendar) start.clone());
-      start.add(Calendar.DAY_OF_MONTH, 1);
+      var isWorking = dayOfWeek == workingDays[0] || dayOfWeek == workingDays[1];
+      if (isWorking) {
+        var slots = Helper.getSlotsOnGivenDay(date);
+        resSlots.addAll(slots);
+      }
+      date.add(Calendar.DAY_OF_MONTH, 1);
 
-    } while (start.get(Calendar.MONTH) == Calendar.MAY);
-    return resDays;
+    } while (date.get(Calendar.MONTH) == Calendar.MAY);
+    return resSlots;
+  }
+
+  public ArrayList<Calendar> getConsultingSlots() {
+    var resSlots = new ArrayList<Calendar>();
+    var slot = Calendar.getInstance();
+    slot.set(2021, Calendar.MAY, 1, 0, 0, 0);
+
+    do {
+      var isSameDayOfWeek = this.consultHours[0] == slot.get(Calendar.DAY_OF_WEEK);
+      if (isSameDayOfWeek) {
+        var consultingHrs = consultHours[1];
+        // 30min - 1
+        slot.set(Calendar.HOUR_OF_DAY, consultingHrs);
+        resSlots.add((Calendar) slot.clone());
+        // 30min - 2
+        slot.add(Calendar.MINUTE, 30);
+        resSlots.add((Calendar) slot.clone());
+        // 30min - 3
+        slot.add(Calendar.MINUTE, 30);
+        resSlots.add((Calendar) slot.clone());
+        // 30min - 4
+        slot.add(Calendar.MINUTE, 30);
+        resSlots.add((Calendar) slot.clone());
+      }
+      slot.add(Calendar.DAY_OF_MONTH, 1);
+
+    } while (slot.get(Calendar.MONTH) == Calendar.MAY);
+    return resSlots;
   }
 
   public ArrayList<Appointment> getBookedAppointments() {
@@ -205,7 +259,8 @@ public class Physician extends Person {
     POOL_REHABILITATION("Pool_Rehabilitation"),
     GYM_REHABILITATION("Gym_Rehabilitation"),
     SPINE_JOINTS_MOBILISATION("Spine_Joints_Mobilisation"),
-    NEURAL_MOBILISATION("Neural_Mobilisation");
+    NEURAL_MOBILISATION("Neural_Mobilisation"),
+    CONSULTATION("Consultation");
 
     private final String name;
 
