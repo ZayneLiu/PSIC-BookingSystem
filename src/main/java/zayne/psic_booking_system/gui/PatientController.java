@@ -118,11 +118,13 @@ public class PatientController {
             });
 
     radioBtnIsVisitor
-        .onMouseClickedProperty()
+        .selectedProperty()
         .addListener(
-            (event) -> {
-              // TODO: Change slots showing to consultation.
-              search();
+            (observable, oldValue, newValue) -> {
+              if (newValue) {
+                labelErrMsg.setText("");
+                listViewResult.getItems().clear();
+              }
             });
 
     btnSearch.setOnMouseClicked(mouseEvent -> search());
@@ -136,7 +138,7 @@ public class PatientController {
   private void loadAppointmentsForPatient(Patient patient) {
     appointmentsForSpecificPatient.clear();
     patient
-        .getBookedAppointment()
+        .getBookedAppointments()
         .forEach(
             appointment -> {
               appointmentsForSpecificPatient.add(appointment);
@@ -225,7 +227,7 @@ public class PatientController {
       btnAttendAppointment.setDisable(true);
       btnCancelAppointment.setDisable(true);
     }
-    DataController.controller.refreshData();
+    Helper.refreshData();
   }
 
   private void missAnAppointment() {
@@ -239,7 +241,7 @@ public class PatientController {
       btnAttendAppointment.setDisable(true);
       btnCancelAppointment.setDisable(true);
     }
-    DataController.controller.refreshData();
+    Helper.refreshData();
   }
 
   private void cancelAnAppointment() {
@@ -253,7 +255,7 @@ public class PatientController {
       btnAttendAppointment.setDisable(true);
       btnCancelAppointment.setDisable(true);
     }
-    DataController.controller.refreshData();
+    Helper.refreshData();
   }
 
   public void search() {
@@ -363,7 +365,7 @@ public class PatientController {
       visitor.bookAppointment(appointment);
 
       labelErrMsg.setText("Appointment booked!");
-      DataController.controller.refreshData();
+      Helper.refreshData();
       System.out.println(appointment.getStat());
       search();
     }
@@ -381,7 +383,7 @@ public class PatientController {
       if (appointment == null) labelErrMsg.setText("NOT booked (duplicated).");
       else {
         labelErrMsg.setText("Appointment booked!");
-        DataController.controller.refreshData();
+        Helper.refreshData();
         System.out.println(appointment.getStat());
         search();
       }
@@ -408,7 +410,7 @@ public class PatientController {
 
       labelPatientRegErrMsg.setText("Successfully registered.");
       refreshPatientData();
-      DataController.controller.refreshData();
+      Helper.refreshData();
     }
     btnPatientRegistration.setDisable(false);
   }
