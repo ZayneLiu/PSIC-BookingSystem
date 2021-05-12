@@ -11,7 +11,7 @@ public class Report {
 
   public static ArrayList<Appointment> getReportAllAppointments() {
     var time = Calendar.getInstance();
-    time.set(2021, Calendar.MAY, 11, 10, 0);
+    time.set(2021, Calendar.MAY, 11, 10, 0,0);
     var app =
         new Appointment(
             time,

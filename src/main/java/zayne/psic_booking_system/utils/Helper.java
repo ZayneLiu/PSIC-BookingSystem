@@ -11,16 +11,16 @@ public class Helper {
     var dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
 
     var slot1 = Calendar.getInstance();
-    slot1.set(2021, month, dayOfMonth, 10, 0);
+    slot1.set(2021, month, dayOfMonth, 10, 0, 0);
 
     var slot2 = Calendar.getInstance();
-    slot2.set(2021, month, dayOfMonth, 12, 0);
+    slot2.set(2021, month, dayOfMonth, 12, 0, 0);
 
     var slot3 = Calendar.getInstance();
-    slot3.set(2021, month, dayOfMonth, 14, 0);
+    slot3.set(2021, month, dayOfMonth, 14, 0, 0);
 
     var slot4 = Calendar.getInstance();
-    slot4.set(2021, month, dayOfMonth, 16, 0);
+    slot4.set(2021, month, dayOfMonth, 16, 0, 0);
 
     slots.add(slot1);
     slots.add(slot2);
